@@ -1,0 +1,40 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.mycompany.elearningsystem.model;
+
+import java.sql.Timestamp;
+
+/**
+ *
+ * @author amri1
+ */
+public class Quiz {
+    private int id;
+    private int courseId;
+    private int lecturerId;
+    private String title;
+    private String quizCode;
+    private Timestamp createdAt;
+
+    public Quiz() {}
+
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
+    public int getCourseId() { return courseId; }
+    public void setCourseId(int courseId) { this.courseId = courseId; }
+
+    public int getLecturerId() { return lecturerId; }
+    public void setLecturerId(int lecturerId) { this.lecturerId = lecturerId; }
+
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+
+    public String getQuizCode() { return quizCode; }
+    public void setQuizCode(String quizCode) { this.quizCode = quizCode; }
+
+    public Timestamp getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+}
