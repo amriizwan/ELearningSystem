@@ -1,0 +1,96 @@
+<%-- 
+    Document   : register
+    Created on : Jun 22, 2026, 4:21:24 PM
+    Author     : amri1
+--%>
+
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyStudyZone — Create account</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
+    <div class="w-full max-w-md">
+        
+        <!-- Back to home-->
+        <a href="${pageContext.request.contextPath}/"
+           class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 mb-6">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Back
+        </a>
+           
+        <!--White border dekat tengah-->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+            <h1 class="text-xl font-medium text-gray-900 mb-1">Create account</h1>
+            <p class="text-gray-500 text-sm mb-6">Fill in your details to register.</p>
+            <!-- Error message -->
+            <% if (request.getAttribute("error") != null) { %>
+            <div class="bg-red-50 border border-red-100 text-red-700 text-sm rounded-xl px-4 py-3 mb-5">
+                <%= request.getAttribute("error") %>
+            </div>
+            <% } %>
+            <!--Start form user isi, submit pergi ke RegisterServlet-->
+            <form action="${pageContext.request.contextPath}/register" method="post">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Full name</label>
+                    <input type="text" name="name" required
+                           placeholder="e.g. Muhammad Amri Izwan"
+                           value="<%= request.getParameter("name") != null ? request.getParameter("name") : "" %>"
+                           class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"/>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email address</label>
+                    <input type="email" name="email" required
+                           placeholder="you@example.com"
+                           value="<%= request.getParameter("email") != null ? request.getParameter("email") : "" %>"
+                           class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"/>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Register as</label>
+                    <select name="role"
+                            class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white">
+                        <option value="student">Student</option>
+                        <option value="lecturer">Lecturer</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" name="password" required
+                           placeholder="Minimum 8 characters"
+                           class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"/>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Confirm password</label>
+                    <input type="password" name="confirmPassword" required
+                           placeholder="Re-enter your password"
+                           class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"/>
+                </div>
+
+                <button type="submit"
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-3 rounded-xl transition-colors duration-150">
+                    Create account
+                </button>
+            </form>
+        </div>
+
+        <p class="text-center text-sm text-gray-500 mt-4">
+            Already have an account?
+            <a href="${pageContext.request.contextPath}/login"
+               class="text-indigo-600 hover:underline font-medium">Sign in</a>
+        </p>
+
+    </div>
+</body>
+</html>
+

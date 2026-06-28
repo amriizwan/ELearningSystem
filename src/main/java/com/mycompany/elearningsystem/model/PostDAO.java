@@ -18,12 +18,9 @@ import java.util.List;
  */
 public class PostDAO {
     // ---------------------------------------------------------------
-    // UC010 - View posts
+    // View posts
     // ---------------------------------------------------------------
 
-    /**
-     * UC010 Step 1 - Returns all posts across enrolled/teaching courses.
-     */
     public List<Post> getAllPostsByUser(int userId, String role) throws SQLException {
         List<Post> posts = new ArrayList<>();
 
@@ -96,7 +93,7 @@ public class PostDAO {
     }
 
     /**
-     * UC010 Step 2 - Returns a single post with all comments.
+     * Returns a single post with all comments.
      */
     public Post getPostById(int postId) throws SQLException {
         String sql = "SELECT p.id, p.title, p.content, p.course_id, p.user_id, " +
@@ -170,15 +167,10 @@ public class PostDAO {
         return comments;
     }
 
-    // ---------------------------------------------------------------
-    // UC012 - Add post
-    // ---------------------------------------------------------------
-
     /**
-     * UC012 Step 3 - Creates a new discussion post.
+     * Creates a new discussion post.
      */
-    public boolean createPost(int userId, int courseId,
-                              String title, String content) throws SQLException {
+    public boolean createPost(int userId, int courseId, String title, String content) throws SQLException {
 
         String sql = "INSERT INTO posts (user_id, course_id, title, content) " +
                      "VALUES (?, ?, ?, ?)";
@@ -199,10 +191,9 @@ public class PostDAO {
     // ---------------------------------------------------------------
 
     /**
-     * UC013 Step 3 - Updates post content.
+     * Updates post content.
      */
-    public boolean updatePost(int postId, int userId,
-                              String title, String content) throws SQLException {
+    public boolean updatePost(int postId, int userId,  String title, String content) throws SQLException {
 
         String sql = "UPDATE posts SET title = ?, content = ?, updated_at = NOW() " +
                      "WHERE id = ? AND user_id = ?";
@@ -219,13 +210,8 @@ public class PostDAO {
         }
     }
 
-    // ---------------------------------------------------------------
-    // UC011 - Delete post (Student, Lecturer — own posts only)
-    // UC019 - Delete post (Admin — any post)
-    // ---------------------------------------------------------------
-
     /**
-     * UC011 Step 3 - Deletes a post owned by this user.
+     * Deletes a post owned by this user.
      */
     public boolean deletePost(int postId, int userId) throws SQLException {
         String sql = "DELETE FROM posts WHERE id = ? AND user_id = ?";
@@ -240,7 +226,7 @@ public class PostDAO {
     }
 
     /**
-     * UC019 - Admin deletes any post (no ownership check).
+     * Admin deletes any post (no ownership check).
      */
     public boolean deletePostAdmin(int postId) throws SQLException {
         String sql = "DELETE FROM posts WHERE id = ?";

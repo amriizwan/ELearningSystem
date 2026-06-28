@@ -77,8 +77,8 @@ public class UserDAO {
 //        return plainPassword.equals(hashedPassword);
     }
 
-    /** UC020 - Admin: get all users for the manage-users table */
-    public java.util.List<User> findAll() throws SQLException {
+    /** Get all users for the manage-users table */
+    public List<User> findAll() throws SQLException {
         List<User> list = new ArrayList<>();
         String sql = "SELECT * FROM users ORDER BY created_at DESC";
         try (Connection conn = DBConnection.getConnection();

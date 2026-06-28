@@ -35,7 +35,7 @@ public class AdminUserServlet extends HttpServlet {
         try {
             List<User> users = userDAO.findAll();
 
-            // UC020 E1: no users in system — list is empty, JSP handles display
+            // No users in system — list is empty, JSP handles display
             req.setAttribute("users", users);
 
             // Pass filter param back to JSP for role tab state

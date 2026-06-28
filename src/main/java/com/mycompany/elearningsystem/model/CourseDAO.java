@@ -165,7 +165,7 @@ public class CourseDAO {
         }
     }
 
-    // --- ADMIN UC021 ---
+    // --- ADMIN  ---
 
     public boolean createCourse(String title, String description) throws SQLException {
         String sql = "INSERT INTO courses (title, description) VALUES (?, ?)";

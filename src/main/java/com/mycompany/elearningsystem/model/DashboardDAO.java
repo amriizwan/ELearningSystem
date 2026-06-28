@@ -182,12 +182,6 @@ public class DashboardDAO {
     }
     
     // ADMIN dashboard
-    // ADMIN dashboard queries (UC018)
-    // ---------------------------------------------------------------
-
-    /**
-     * UC018 Admin - Returns overall system statistics as AdminStats object.
-     */
     public AdminStats getAdminStats() throws SQLException {
         AdminStats stats = new AdminStats();
 
@@ -222,7 +216,7 @@ public class DashboardDAO {
     }
 
     /**
-     * UC018 Admin - Returns top 5 courses by enrollment count.
+    Returns top 5 courses by enrollment count.
      */
     public List<Course> getTopCourses() throws SQLException {
         List<Course> courses = new ArrayList<>();
@@ -249,7 +243,7 @@ public class DashboardDAO {
     }
 
     /**
-     * UC018 Admin - Returns 5 most recently registered users.
+    Returns 5 most recently registered users.
      */
     public List<User> getRecentUsers() throws SQLException {
         List<User> users = new ArrayList<>();
@@ -276,7 +270,7 @@ public class DashboardDAO {
     }
 
     /**
-     * UC018 Admin - Returns 5 most recent forum posts.
+    Returns 5 most recent forum posts.
      */
     public List<Post> getRecentPosts() throws SQLException {
         List<Post> posts = new ArrayList<>();
