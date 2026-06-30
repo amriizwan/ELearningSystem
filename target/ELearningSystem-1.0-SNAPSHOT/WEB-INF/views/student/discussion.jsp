@@ -2,6 +2,8 @@
 
 <!--Core tag   c:remove, c:if , c:choose, c:forEach  -->
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<!--Function  	fn:length() , -->
+<%@ taglib prefix = "fn" uri = "http://java.sun.com/jsp/jstl/functions" %> 
 
 <!DOCTYPE html>
 <html>
@@ -51,7 +53,7 @@
                         <c:remove var="error" scope="session"/>
                     </c:if>
 
-                    <%-- UC012: Create post form --%>
+                    <%--  Create post form --%>
                     <div class="px-4 py-3 border-b border-gray-100">
                         <button onclick="toggleCreateForm()"
                                 class="w-full text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg">
@@ -76,12 +78,12 @@
                                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
                                 </div>
                                 <div class="mb-2">
-                                    <%-- UC012 E1: content cannot be empty --%>
+                                    <%-- content cannot be empty --%>
                                     <textarea name="content" required rows="3"
                                               placeholder="Please help me solve this error..."
                                               class="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
                                 </div>
-                                <%-- UC012 Step 3: Post button (exact label from SDD) --%>
+                                <%--  Post button  --%>
                                 <button type="submit"
                                         class="w-full text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg">
                                     Post
@@ -142,13 +144,13 @@
                                         </p>
                                     </div>
 
-                                    <%-- UC011 + UC013: show edit/delete only for post owner --%>
+                                    <%-- show edit/delete only for post owner --%>
                                     <c:if test="${selectedPost.userId == sessionScope.userId}">
                                         <div class="flex gap-2 ml-3">
-                                            <button onclick="showEditPost(
-                                                        '${selectedPost.id}',
-                                                        '${selectedPost.title}',
-                                                        '${selectedPost.content}')"
+                                            <input type="hidden" id="currentPostId"      value="${fn:escapeXml(selectedPost.id)}"/>
+                                            <input type="hidden" id="currentPostTitle"   value="${fn:escapeXml(selectedPost.title)}"/>
+                                            <input type="hidden" id="currentPostContent" value="${fn:escapeXml(selectedPost.content)}"/>
+                                            <button onclick="showEditPost()" 
                                                     class="text-xs border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-50">
                                                 Edit
                                             </button>
@@ -277,9 +279,13 @@
                 const f = document.getElementById('createForm');
                 f.classList.toggle('hidden');
             }
-            function showEditPost(id, title, content) {
-                document.getElementById('editPostId').value = id;
-                document.getElementById('editPostTitle').value = title;
+            function showEditPost() {
+                const id      = document.getElementById('currentPostId').value;
+                const title   = document.getElementById('currentPostTitle').value;
+                const content = document.getElementById('currentPostContent').value;
+
+                document.getElementById('editPostId').value      = id;
+                document.getElementById('editPostTitle').value   = title;
                 document.getElementById('editPostContent').value = content;
                 document.getElementById('editPostModal').classList.remove('hidden');
             }
