@@ -1,14 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.elearningsystem.controller;
 
 import com.mycompany.elearningsystem.model.Course;
-import com.mycompany.elearningsystem.model.CourseDAO;
+import com.mycompany.elearningsystem.dao.CourseDAO;
 import com.mycompany.elearningsystem.model.Note;
-import com.mycompany.elearningsystem.model.NoteDAO;
-import com.mycompany.elearningsystem.model.User;
+import com.mycompany.elearningsystem.dao.NoteDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -27,10 +22,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-/**
- *
- * @author amri1
- */
 @WebServlet("/note")
 @MultipartConfig
 public class NoteServlet extends HttpServlet {
@@ -49,35 +40,7 @@ public class NoteServlet extends HttpServlet {
 
         try {
             if ("student".equals(role)) {
-
-                // UC005 Step 1: get all notes from enrolled courses
-                List<Note> notes = noteDAO.getNotesByStudentEnrollment(userId);
-
-                // UC005 Step 3: if student selected a course + lecturer, filter
-                String courseIdParam = req.getParameter("courseId");
-                String lecturerIdParam = req.getParameter("lecturerId");
-               
-                if (courseIdParam != null && !courseIdParam.isBlank() && lecturerIdParam != null && !lecturerIdParam.isBlank()) {
-
-                    int courseId = Integer.parseInt(courseIdParam);
-                    int lecturerId = Integer.parseInt(lecturerIdParam);
-
-                    notes = noteDAO.getNotesByCourseAndLecturer(courseId, lecturerId);
-                }
-
-                // UC005 E1: no notes available
-                if (notes.isEmpty()) {
-                    req.setAttribute("error", "No notes available");
-                }
-
-                // Pass enrolled courses for the course selector dropdown
-                List<User> getLecturer = noteDAO.getLecturer();
-                List<Course> enrolledCourses = courseDAO.getEnrolledCourses(userId);
-                req.setAttribute("lecturers", getLecturer);
-                req.setAttribute("enrolledCourses", enrolledCourses);
-                req.setAttribute("notes", notes);
-                req.getRequestDispatcher("/WEB-INF/views/student/note.jsp").forward(req, resp);
-
+                
             } else if ("lecturer".equals(role)) {
 
                 // UC015 Step 1: get all notes by this lecturer

@@ -19,6 +19,14 @@ public class Course {
     // Extra field — filled by JOIN query, not stored in courses table
     private int enrollmentCount;
     
+    private int noteCount;
+    private int assignmentCount;
+    private int quizCount;
+    
+    private String lecturerNames;
+    private boolean enrolled;
+
+    
     public Course() {}
 
     public Course(int id, String title, String description) {
@@ -41,5 +49,45 @@ public class Course {
     
     public int getEnrollmentCount() { return enrollmentCount; }
     public void setEnrollmentCount(int enrollmentCount) { this.enrollmentCount = enrollmentCount; }
+    
+    public int getNoteCount() {
+        return noteCount;
+    }
+
+    public int getAssignmentCount() {
+        return assignmentCount;
+    }
+
+    public int getQuizCount() {
+        return quizCount;
+    }
+    
+    public void setNoteCount(int noteCount) {
+        this.noteCount = noteCount;
+    }
+
+    public void setAssignmentCount(int assignmentCount) {
+        this.assignmentCount = assignmentCount;
+    }
+
+    public void setQuizCount(int quizCount) {
+        this.quizCount = quizCount;
+    }
+    
+    public String getLecturerNames() {
+        return lecturerNames;
+    }
+    
+    public void setLecturerNames(String lecturerNames) {
+        this.lecturerNames = lecturerNames;
+    }
+    
+    public boolean isEnrolled() {
+        return enrolled;
+    }
+    
+    public void setEnrolled(boolean enrolled) {
+        this.enrolled = enrolled;
+    }
 }
 

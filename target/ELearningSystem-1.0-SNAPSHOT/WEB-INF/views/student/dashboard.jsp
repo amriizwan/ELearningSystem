@@ -5,148 +5,202 @@
 <!--Function  	fn:length() , -->
 <%@ taglib prefix = "fn" uri = "http://java.sun.com/jsp/jstl/functions" %> 
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyStudyZone - Student Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 min-h-screen">
-    <div class="flex min-h-screen">
-        <aside class="w-52 bg-white border-r flex flex-col py-5 fixed h-full">
 
-            <!--Sidebar kiri-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Dashboard - MyStudyZone</title>
+        
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+        
+    </head>
+    <body class="bg-gray-50 text-gray-900">
+        <aside class="w-52 bg-white border-r border-gray-100 flex flex-col py-5 fixed h-full">
             <div class="px-4 mb-6">
                 <span class="text-base font-semibold text-gray-900">MyStudyZone</span>
                 <span class="block text-xs text-gray-400 mt-0.5">E-Learning System</span>
             </div>
             <nav class="flex flex-col gap-0.5 flex-1">
                 <a href="${pageContext.request.contextPath}/dashboard"
-                   class="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium bg-gray-50 text-gray-900 rounded-none">
-                    Dashboard
-                </a>
-                   <a href="${pageContext.request.contextPath}/course"
-                   class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-900">
-                    My Courses
-                </a>
-                <a href="${pageContext.request.contextPath}/note"
-                   class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-900">
-                    Notes
-                </a>
+                   class="px-4 py-2.5 text-sm font-medium bg-gray-50 text-gray-900">Dashboard</a>
+                <a href="${pageContext.request.contextPath}/enrollment"
+                   class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Enroll</a>
+                <a href="${pageContext.request.contextPath}/course"
+                   class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">My Courses</a>
                 <a href="${pageContext.request.contextPath}/assignment"
-                   class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-900">
-                    Assignments
-                </a>
+                   class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Assignments</a>
                 <a href="${pageContext.request.contextPath}/quiz"
-                   class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-900">
-                    Quiz
-                </a>
+                   class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Quiz</a>
                 <a href="${pageContext.request.contextPath}/discussion"
-                   class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-900">
-                    Discussion
-                </a>
+                   class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Discussion</a>
             </nav>
             <a href="${pageContext.request.contextPath}/logout"
-               class="px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 mt-auto">
-                Logout
-            </a>
+               class="px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 mt-auto">Logout</a>
         </aside>
+               
+        <main class="ml-56 min-h-screen p-8">
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-xl font-semibold text-gray-900">
+                    ${greeting}, ${studentName}!
+                </h1>
 
-        <!--Kanan-->
-        <main class="ml-52 flex-1 p-6">
-            <div class="flex justify-between mb-6 items-center">
-                <h1 class="text-lg font-semibold text-gray-900">Dashboard</h1>
-                <span class="text-sm text-gray-500">Welcome, <strong>${sessionScope.userName}</strong></span>   
+                <p class="text-sm text-gray-400 mt-1">
+                    Here's what's happening today — ${today}
+                </p>
             </div>
-            
-            <!--3 Kotak-->
-            <div class="grid grid-cols-3 gap-4 mb-6">
-                <div class="bg-white rounded-xl border border-gray-100 p-4">
-                    <p class="text-xs text-gray-400 mb-1">Enrolled courses</p>
-                    <p class="text-2xl font-semibold text-gray-900">${fn:length(enrolledCourses)}</p>
-                </div>
+
+            <!-- Stat cards -->
+            <div class="grid grid-cols-4 gap-4 mb-8">
                 
-                <div class="bg-white rounded-xl border border-gray-100 p-4">
-                    <p class="text-xs text-gray-400 mb-1">Pending assignments</p>
-                    <p class="text-2xl font-semibold text-gray-900">${fn:length(upcomingAssignments)}</p>
+                <div class="bg-white border border-gray-100 rounded-xl p-5">
+                    <p class="text-xs text-gray-400 mb-2">Enrolled courses</p>
+                    <p class="text-3xl font-semibold text-gray-900">${enrolCourseCount}</p>
+                    <p class="text-xs text-gray-400 mt-1">active this semester</p>
                 </div>
-                
-                <div class="bg-white rounded-xl border border-gray-100 p-4">
-                    <p class="text-xs text-gray-400 mb-1">Quizzes taken</p>
-                    <p class="text-2xl font-semibold text-gray-900">${fn:length(recentQuizScores)}</p>
+
+                <div class="bg-white border border-gray-100 rounded-xl p-5">
+                    <p class="text-xs text-gray-400 mb-2">Assignments due</p>
+
+                    <p class="text-3xl font-semibold ${overDueCount > 0 ? 'text-red-500' : 'text-gray-900'}">
+                        ${totalAsgnCount + overDueCount}
+                    </p>
+
+                    <p class="text-xs text-gray-400 mt-1">
+                        ${overDueCount} overdue
+                    </p>
                 </div>
+
+                <div class="bg-white border border-gray-100 rounded-xl p-5">
+                    <p class="text-xs text-gray-400 mb-2">Quizzes pending</p>
+                    <p class="text-3xl font-semibold text-gray-900">${avlQuizCount}</p>
+                    <p class="text-xs text-gray-400 mt-1">not yet attempted</p>
+                </div>
+
+                <div class="bg-white border border-gray-100 rounded-xl p-5">
+                    <p class="text-xs text-gray-400 mb-2">Avg. quiz score</p>
+                    <p class="text-3xl font-semibold text-gray-900">${avgCount}%</p>
+                    <p class="text-xs text-gray-400 mt-1">across all quizzes</p>
+                </div>
+
             </div>
-            
-            <!--2 kotak bawah-->
-            <div class="grid grid-cols-2 gap-6">        
-                <div class="bg-white rounded-xl border border-gray-100 p-5">
-                    <h2 class="text-xs font-semibold text-gray-400 mb-4">UPCOMING DEADLINES</h2>
+
+            <!-- Two column layout -->
+            <div class="grid grid-cols-2 gap-6">
+
+                <!-- My courses -->
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-sm font-semibold text-gray-700">My courses</h2>
+                        <a href="courses.php" class="text-xs text-gray-400 hover:text-gray-700 transition">View all →</a>
+                    </div>
+
                     <c:choose>
-                        <c:when test="${empty upcomingAssignments}">  <!-- Kalau array upcomingAssignments kosong -->
-                            <p class="text-sm text-gray-400">No pending assignments.</p>
-                        </c:when>
-                        <c:otherwise>
-                            <c:forEach var="a" items="${upcomingAssignments}">
-                                <div class="flex items-start justify-between py-3 border-b border-gray-50 last:border-0">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-900">${a.title}</p>
-                                    <p class="text-xs text-gray-400 mt-0.5">${a.courseName}</p>
-                                </div>
-                                <span class="text-xs bg-red-50 text-red-600 px-2 py-1 rounded-full font-medium whitespace-nowrap ml-3">
-                                    ${a.dueDate}
-                                </span>
+                        <c:when test="${empty enrolledCourses}">
+                            <div class="bg-white border border-gray-100 rounded-xl p-8 text-center">
+                                <p class="text-sm text-gray-400">
+                                    You haven't enrolled in any courses yet.
+                                </p>
+
+                                <a href="EnrollmentController"
+                                   class="inline-block mt-3 text-sm text-emerald-600 hover:underline">
+                                    Browse courses →
+                                </a>
                             </div>
-                            </c:forEach>
+                        </c:when>
+
+                        <c:otherwise>
+                            <div class="grid grid-cols-1 gap-3">
+                                <c:forEach var="course" items="${enrolledCourses}" varStatus="status">
+                                    <c:set var="palette" value="${palettes[status.index % 4]}" />
+                                    <div class="bg-white border border-gray-100 rounded-xl p-4 hover:border-gray-200 transition cursor-pointer"
+                                         onclick="location.href='course'">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <span class="text-xs font-medium px-2.5 py-1 rounded-full ${palette.badge}">
+                                                ${course.title}
+                                            </span>
+                                        </div>
+
+                                        <div class="text-xs text-gray-400 mb-3">
+                                            ${course.noteCount} notes ·
+                                            ${course.assignmentCount} assignments
+                                        </div>
+
+                                        <div class="h-1 bg-gray-100 rounded-full overflow-hidden">
+                                        <!--<div class="h-full rounded-full ${palette.bar}"
+                                                 style="width:course.progress%">
+                                            </div>-->
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </div>
                         </c:otherwise>
                     </c:choose>
                 </div>
-                
-                <div class="bg-white rounded-xl border border-gray-100 p-5">
-                <h2 class="text-xs font-semibold text-gray-400  mb-4">RECENT QUIZ SCORES</h2>
-                <c:choose>
-                    <c:when test="${empty recentQuizScores}">
-                        <p class="text-sm text-gray-400">No quiz scores yet.</p>
-                    </c:when>
-                    <c:otherwise>
-                        <c:forEach var="q" items="${recentQuizScores}">
-                            <div class="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-900">${q.title}</p>
-                                    <p class="text-xs text-gray-400 mt-0.5">${q.course_title}</p>
-                                </div>
-                                <span class="text-sm font-semibold text-indigo-600">${q.score}</span>
-                            </div>
-                        </c:forEach>
-                    </c:otherwise>
-                </c:choose>
-            </div>
-                
-            </div>
-            
-                <!--a1 card enrol course, kalau tak empty retrieve arraylist data guna forloop -->
-            <div class="bg-white rounded-xl border border-gray-100 p-5 mt-6">
-            <h2 class="text-xs font-semibold text-gray-400 mb-4">ENROLLED COURSES</h2>
-            <c:choose>
-                <c:when test="${empty enrolledCourses}"> <!-- Kalau array enrolledCourses kosong -->
-                    <p class="text-sm text-gray-400">You are not enrolled in any courses yet.
-                        <a href="${pageContext.request.contextPath}/course" class="text-indigo-600 hover:underline">Browse courses</a>
-                    </p>
-                </c:when>
-                <c:otherwise>
-                    <div class="grid grid-cols-2 gap-4">
-                        <c:forEach var="c" items="${enrolledCourses}">
-                            <a href="${pageContext.request.contextPath}/course?id=${c.id}"
-                               class="border border-gray-100 rounded-xl p-4 hover:bg-gray-50 transition-colors">
-                                <p class="text-sm font-medium text-gray-900">${c.title}</p>
-                            </a>
-                        </c:forEach>
+
+                <!-- Upcoming tasks -->
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-sm font-semibold text-gray-700">Upcoming tasks</h2>
+                        <a href="assignments.php" class="text-xs text-gray-400 hover:text-gray-700 transition">View all →</a>
                     </div>
-                </c:otherwise>
-            </c:choose>
-        </div>
-                
+
+                    <c:choose>
+                        <c:when test="${empty tasks}">
+                            <div class="bg-white border border-gray-100 rounded-xl p-8 text-center">
+                                <p class="text-sm text-gray-400">
+                                    No pending assignments. You're all caught up! 🎉
+                                </p>
+                            </div>
+                        </c:when>
+
+                        <c:otherwise>
+
+                            <div class="flex flex-col gap-3">
+
+                                <c:forEach var="task" items="${tasks}">
+                                    <div class="bg-white border border-gray-100 rounded-xl px-4 py-3 flex items-center gap-4
+                                                hover:border-gray-200 transition cursor-pointer"
+                                         onclick="location.href='AssignmentController'">
+                                        <div class="w-2 h-2 rounded-full flex-shrink-0
+                                            ${task.urgency == 'overdue' ? 'bg-red-400'
+                                                : task.urgency == 'soon' ? 'bg-amber-400'
+                                                : 'bg-emerald-400'}">
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="text-sm text-gray-900 truncate">
+                                                ${task.title}
+                                            </div>
+
+                                            <div class="text-xs text-gray-400 truncate">
+                                                ${task.courseTitle} · ${task.lecturerName}
+                                            </div>
+                                        </div>
+
+                                        <div class="text-xs flex-shrink-0">
+                                            <c:choose>
+                                                <c:when test="${task.urgency == 'overdue'}">
+                                                    <span class="text-red-500 font-medium">Overdue</span>
+                                                </c:when>
+
+                                                <c:when test="${task.urgency == 'soon'}">
+                                                    <span class="text-amber-600">${task.dueDate}</span>
+                                                </c:when>
+
+                                                <c:otherwise>
+                                                    <span class="text-gray-400">${task.dueDate}</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
         </main>
-    </div>
-</body>
+    </body>
+</html>

@@ -21,6 +21,34 @@ public class QuizAttempt {
     // Extra fields for display
     private String quizTitle;
     private String studentName;
+    
+    private String courseTitle;
+
+    public String getCourseTitle() {
+        return courseTitle;
+    }
+
+    public void setCourseTitle(String courseTitle) {
+        this.courseTitle = courseTitle;
+    }
+
+    public String getLectName() {
+        return lectName;
+    }
+
+    public void setLectName(String lectName) {
+        this.lectName = lectName;
+    }
+
+    public int getTotalQuestions() {
+        return totalQuestions;
+    }
+
+    public void setTotalQuestions(int totalQuestions) {
+        this.totalQuestions = totalQuestions;
+    }
+    private String lectName;
+    private int totalQuestions;
 
     public QuizAttempt() {}
 

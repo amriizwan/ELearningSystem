@@ -20,6 +20,17 @@ public class QuizQuestion {
 
     // Loaded alongside the question for display during quiz attempt
     private List<QuizOption> options;
+    
+    private Integer savedAnswer;
+
+    public void setSavedAnswer(Integer savedAnswer) {
+        this.savedAnswer = savedAnswer;
+    }
+
+    public Integer getSavedAnswer() {
+        return savedAnswer;
+    }
+
 
     public QuizQuestion() {}
 

@@ -17,7 +17,47 @@ public class Quiz {
     private String title;
     private String quizCode;
     private Timestamp createdAt;
+    
+    private QuizAttempt quizAttempt;
 
+    public void setQuizAttempt(QuizAttempt quizAttempt) {
+        this.quizAttempt = quizAttempt;
+    }
+
+    public QuizAttempt getQuizAttempt() {
+        return quizAttempt;
+    }
+
+
+    private String lectName;
+    
+
+    public void setLectName(String lectName) {
+        this.lectName = lectName;
+    }
+
+    public void setCourseTitle(String courseTitle) {
+        this.courseTitle = courseTitle;
+    }
+
+    public void setQuestionCount(int questionCount) {
+        this.questionCount = questionCount;
+    }
+
+    public String getLectName() {
+        return lectName;
+    }
+
+    public String getCourseTitle() {
+        return courseTitle;
+    }
+
+    public int getQuestionCount() {
+        return questionCount;
+    }
+    private String courseTitle;
+    private int questionCount;
+    
     public Quiz() {}
 
     public int getId() { return id; }
