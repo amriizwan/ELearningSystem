@@ -8,8 +8,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AssignmentDAO {
     // ---------------------------------------------------------------
@@ -155,167 +159,436 @@ public class AssignmentDAO {
     // LECTURER - Manage assignment
     // ---------------------------------------------------------------
 
-    /**
-     * UC016 Step 1 - Returns all assignments created by this lecturer.
-     */
-    public List<Assignment> getAssignmentsByLecturer(int lecturerId) throws SQLException {
+    // ── Fetch lecturer's courses ──
+    public List<Assignment> getLecturerCourse(int lecturer_id) {
+
+        List<Assignment> courses = new ArrayList<>();
+
+        String sql =
+            "SELECT c.id, c.title, COUNT(a.id) AS asgn_count" +
+            "    FROM course_lecturer cl" +
+            "    JOIN courses c ON c.id = cl.course_id" +
+            "    LEFT JOIN assignments a ON a.course_id = c.id AND a.lecturer_id = ?" +
+            "    WHERE cl.lecturer_id = ?" +
+            "    GROUP BY c.id ORDER BY c.title ASC";
+
+            
+            try (Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)){
+
+                    ps.setInt(2, lecturer_id);
+                    ps.setInt(1, lecturer_id);
+
+                    ResultSet rs = ps.executeQuery();
+                        while(rs.next()) {
+                            Assignment assignment =
+                                    new Assignment();
+
+                            assignment.setCourseId(
+                                    rs.getInt("id"));
+
+                            assignment.setTitle(
+                                    rs.getString("title"));
+
+                            assignment.setAssignment_count(
+                                    rs.getInt("asgn_count"));
+
+                            courses.add(assignment);
+                        }
+            }catch(SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL ERROR: " + e.getMessage());
+        }
+        return courses;
+    }
+    
+    // ── Fetch assignments for selected course ──
+    public List<Assignment> getAssignment(int course_id, int lecturer_id){
         List<Assignment> assignments = new ArrayList<>();
 
-        String sql = "SELECT a.id, a.title, a.description, a.due_date, a.max_marks, " +
-                     "a.course_id, a.lecturer_id, a.created_at, " +
-                     "c.title AS course_name, " +
-                     "(SELECT COUNT(*) FROM assignment_submissions asub " +
-                     " WHERE asub.assignment_id = a.id) AS submission_count " +
-                     "FROM assignments a " +
-                     "JOIN courses c ON c.id = a.course_id " +
-                     "WHERE a.lecturer_id = ? " +
-                     "ORDER BY c.title ASC, a.due_date ASC";
+        String sql =
+            "SELECT a.*," +
+            "               COUNT(DISTINCT s.id)                                           AS submission_count," +
+            "               COUNT(DISTINCT CASE WHEN s.mark IS NULL THEN s.id END)        AS ungraded_count," +
+            "               COUNT(DISTINCT e.student_id)                                   AS enrolled_count" +
+            "        FROM assignments a" +
+            "        LEFT JOIN assignment_submissions s ON s.assignment_id = a.id" +
+            "        LEFT JOIN enrollments e            ON e.course_id = a.course_id" +
+            "        WHERE a.course_id = ? AND a.lecturer_id = ?" +
+            "        GROUP BY a.id" +
+            "        ORDER BY a.due_date DESC";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try {
+            
+            Connection conn  = DBConnection.getConnection();
 
-            ps.setInt(1, lecturerId);
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Assignment a = new Assignment();
-                    a.setId(rs.getInt("id"));
-                    a.setTitle(rs.getString("title"));
-                    a.setDescription(rs.getString("description"));
-                    a.setDueDate(rs.getTimestamp("due_date"));
-                    a.setMaxMarks(rs.getInt("max_marks"));
-                    a.setCourseId(rs.getInt("course_id"));
-                    a.setLecturerId(rs.getInt("lecturer_id"));
-                    a.setCreatedAt(rs.getTimestamp("created_at"));
-                    a.setCourseName(rs.getString("course_name"));
-                    a.setSubmissionCount(rs.getInt("submission_count"));
-                    assignments.add(a);
-                }
+            ps.setInt(1, course_id);
+            ps.setInt(2, lecturer_id);
+
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                Assignment assignment =
+                        new Assignment();
+
+                assignment.setId(
+                        rs.getInt("id"));
+                assignment.setCourseId(
+                        rs.getInt("course_id"));
+                assignment.setLecturerId(
+                        rs.getInt("lecturer_id"));
+                
+                
+                assignment.setTitle(
+                        rs.getString("title"));
+                assignment.setDescription(
+                        rs.getString("description"));
+                assignment.setDueDate(
+                        rs.getTimestamp("due_date"));
+                assignment.setMaxMarks(
+                        rs.getInt("max_marks"));
+                 assignment.setCreatedAt(
+                        rs.getTimestamp("created_at"));
+                
+                assignment.setAssignment_count(
+                        rs.getInt("submission_count"));
+                assignment.setUngraded_count(
+                        rs.getInt("ungraded_count"));
+                assignment.setEnroll_count(
+                        rs.getInt("enrolled_count"));
+
+                assignments.add(assignment);
             }
+
+        } catch(SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL ERROR: " + e.getMessage());
         }
+
         return assignments;
     }
+    
+    // ── Fetch selected assignment ──
+    public Assignment getSelectedAssignment(int assigment_id, int lecturer_id){
+        Assignment assignment = new Assignment();
 
-    /**
-     * UC016 Step 2 - Creates a new assignment.
-     */
-    public boolean createAssignment(int courseId, int lecturerId, String title,
-                                    String description, String dueDate,
-                                    int maxMarks) throws SQLException {
+        String sql =
+            "SELECT * FROM assignments WHERE id = ? AND lecturer_id = ?";
 
-        String sql = "INSERT INTO assignments " +
-                     "(course_id, lecturer_id, title, description, due_date, max_marks) " +
-                     "VALUES (?, ?, ?, ?, ?, ?)";
+        try {
+            
+            Connection conn = DBConnection.getConnection();
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
 
-            ps.setInt(1, courseId);
-            ps.setInt(2, lecturerId);
+            ps.setInt(1, assigment_id);
+            ps.setInt(2, lecturer_id);
+
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+
+                assignment.setId(
+                        rs.getInt("id"));
+                assignment.setCourseId(
+                        rs.getInt("course_id"));
+                assignment.setLecturerId(
+                        rs.getInt("lecturer_id"));
+                
+                
+                assignment.setTitle(
+                        rs.getString("title"));
+                assignment.setDescription(
+                        rs.getString("description"));
+                assignment.setDueDate(
+                        rs.getTimestamp("due_date"));
+                assignment.setMaxMarks(
+                        rs.getInt("max_marks"));
+                 assignment.setCreatedAt(
+                        rs.getTimestamp("due_date"));
+                
+            }
+
+        } catch(SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL ERROR: " + e.getMessage());
+        }
+
+        return assignment;
+    }
+    
+    // ── Fetch submissions for selected assignment ──
+    public List<AssignmentSubmission> getSubmissionAssignment(int assignment_id){
+        List<AssignmentSubmission> assignments = new ArrayList<>();
+
+        String sql =
+            "SELECT s.*, u.name AS student_name" +
+            "        FROM assignment_submissions s" +
+            "        JOIN users u ON u.id = s.student_id" +
+            "        WHERE s.assignment_id = ?" +
+            "        ORDER BY s.submitted_at DESC";
+
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
+
+            ps.setInt(1, assignment_id);
+
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                AssignmentSubmission assignment =
+                        new AssignmentSubmission();
+
+                assignment.setId(
+                        rs.getInt("id"));
+                assignment.setAssignmentId(
+                        rs.getInt("assignment_id"));
+                assignment.setStudentId(
+                        rs.getInt("student_id"));
+                
+                
+                assignment.setFileUrl(
+                        rs.getString("file_url"));
+                assignment.setAnswerText(
+                        rs.getString("answer_text"));
+                assignment.setLecturerComment(
+                        rs.getString("lecturer_comment"));
+                assignment.setStudentName(
+                        rs.getString("student_name"));
+                assignment.setSubmittedAt(
+                        rs.getTimestamp("submitted_at"));
+                assignment.setMark(
+                        rs.getInt("mark"));
+                
+                assignments.add(assignment);
+            }
+
+        } catch(SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL ERROR: " + e.getMessage());
+        }
+
+        return assignments;
+    }
+    
+    // ── Fetch single submission for marking ──
+    public AssignmentSubmission getForMarking(int assigmentSubmission_id, int lecturer_id){
+        AssignmentSubmission assignment = new AssignmentSubmission();
+
+        String sql =
+            " SELECT s.*, u.name AS student_name, a.title AS asgn_title, a.max_marks AS maxMarks " +
+            "        FROM assignment_submissions s" +
+            "        JOIN users u        ON u.id = s.student_id" +
+            "        JOIN assignments a  ON a.id = s.assignment_id AND a.lecturer_id = ?" +
+            "        WHERE s.id = ?";
+
+        try {
+           Connection conn = DBConnection.getConnection();
+
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
+
+            ps.setInt(1, lecturer_id);
+            ps.setInt(2, assigmentSubmission_id);
+
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+
+                assignment.setId(
+                        rs.getInt("id"));
+                assignment.setAssignmentId(
+                        rs.getInt("assignment_id"));
+                assignment.setStudentId(
+                        rs.getInt("student_id"));
+                
+                
+                assignment.setFileUrl(
+                        rs.getString("file_url"));
+                assignment.setTitle(
+                        rs.getString("asgn_title"));
+                assignment.setAnswerText(
+                        rs.getString("answer_text"));
+                assignment.setLecturerComment(
+                        rs.getString("lecturer_comment"));
+                assignment.setStudentName(
+                        rs.getString("student_name"));
+                assignment.setSubmittedAt(
+                        rs.getTimestamp("submitted_at"));
+                assignment.setMark(
+                        rs.getInt("mark"));
+                assignment.setMaxMarks(
+                        rs.getInt("maxMarks"));
+                
+            }
+
+        } catch(SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL ERROR: " + e.getMessage());
+        }
+
+        return assignment;
+    }
+    
+     // CREATE ASSIGNMENT
+    public Boolean uploadAssignmnet(int course_id, int lecturer_id, String title, String description, Timestamp dueDate, int maxMarks ){
+        try{
+            
+            Connection conn = DBConnection.getConnection();
+            Statement stmt = conn.createStatement();
+                    
+            String sql = "INSERT INTO `assignments` (`course_id`, `lecturer_id`, `title`, `description`, `due_date`, `max_marks`) VALUES (?,?,?,?,?,?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1,course_id );
+            ps.setInt(2,lecturer_id );
             ps.setString(3, title);
             ps.setString(4, description);
-            ps.setString(5, dueDate);
+            ps.setTimestamp(5, dueDate);
             ps.setInt(6, maxMarks);
-            return ps.executeUpdate() == 1;
+             
+            
+            int rowsAffected = ps.executeUpdate();
+         
+            stmt.close();
+            conn.close();
+            return rowsAffected > 0;
+            
+        }catch(SQLException ex){
+            Logger.getLogger(AssignmentDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return false;
     }
-
-    /**
-     * UC016 Step 3 - Updates title, description, due date, max marks.
-     */
-    public boolean updateAssignment(int assignmentId, int lecturerId, String title,
-                                    String description, String dueDate,
-                                    int maxMarks) throws SQLException {
-
-        String sql = "UPDATE assignments SET title = ?, description = ?, " +
-                     "due_date = ?, max_marks = ? " +
-                     "WHERE id = ? AND lecturer_id = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
+    
+     // DELETE ASSIGNMENT
+    public Boolean deleteAssignment(int id, int lecturer_id){
+        try{
+            
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+                    
+            String sql = "DELETE FROM assignments WHERE id = ? AND lecturer_id = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1,id);
+            ps.setInt(2,lecturer_id);
+            int rowsAffected = ps.executeUpdate();
+           
+            stmt.close();
+            con.close();
+            return rowsAffected > 0;
+            
+        }catch(SQLException ex){
+            Logger.getLogger(AssignmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    // EDIT ASSIGNMENT
+    public Boolean editAssignment(int id, String title, String description, Timestamp dueDate, int maxMarks, int lecturer_id){
+        try{
+            
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+                    
+            String sql = "UPDATE assignments SET title=?, description=?, due_date=?, max_marks=? WHERE id=? AND lecturer_id=?";
+            PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, title);
             ps.setString(2, description);
-            ps.setString(3, dueDate);
+            ps.setTimestamp(3, dueDate);
             ps.setInt(4, maxMarks);
-            ps.setInt(5, assignmentId);
-            ps.setInt(6, lecturerId);
-            return ps.executeUpdate() == 1;
+            ps.setInt(5, id);
+            ps.setInt(6, lecturer_id);
+             
+            
+            int rowsAffected = ps.executeUpdate();
+            
+            stmt.close();
+            con.close();
+            return rowsAffected > 0;
+            
+//            response.getWriter().print("Connection to DB success");
+        }catch(SQLException ex){
+            Logger.getLogger(AssignmentDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return false;
     }
+    
+    public List<AssignmentSubmission> listSubmitted(int assignment_id){
+        List<AssignmentSubmission> student_submitted = new ArrayList<>();
 
-    /**
-     * UC016 Step 4 - Deletes an assignment.
-     */
-    public boolean deleteAssignment(int assignmentId, int lecturerId) throws SQLException {
-        String sql = "DELETE FROM assignments WHERE id = ? AND lecturer_id = ?";
+        String sql =
+            "SELECT s.*, u.name AS student_name" +
+            "        FROM assignment_submissions s" +
+            "        JOIN users u ON u.id = s.student_id" +
+            "        WHERE s.assignment_id = ?" +
+            "        ORDER BY s.submitted_at DESC";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try {
+            Connection conn = DBConnection.getConnection();
 
-            ps.setInt(1, assignmentId);
-            ps.setInt(2, lecturerId);
-            return ps.executeUpdate() == 1;
-        }
-    }
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
+            ps.setInt(1, assignment_id);
+            
 
-    /**
-     * Returns all submissions for a specific assignment.
-     */
-    public List<AssignmentSubmission> getSubmissionsByAssignment(int assignmentId) throws SQLException {
-        List<AssignmentSubmission> submissions = new ArrayList<>();
-
-        String sql = "SELECT asub.id, asub.assignment_id, asub.student_id, " +
-                     "asub.file_url, asub.answer_text, asub.submitted_at, " +
-                     "asub.mark, asub.lecturer_comment, " +
-                     "u.name AS student_name " +
-                     "FROM assignment_submissions asub " +
-                     "JOIN users u ON u.id = asub.student_id " +
-                     "WHERE asub.assignment_id = ? " +
-                     "ORDER BY asub.submitted_at ASC";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, assignmentId);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    AssignmentSubmission sub = new AssignmentSubmission();
-                    sub.setId(rs.getInt("id"));
-                    sub.setAssignmentId(rs.getInt("assignment_id"));
-                    sub.setStudentId(rs.getInt("student_id"));
-                    sub.setFileUrl(rs.getString("file_url"));
-                    sub.setAnswerText(rs.getString("answer_text"));
-                    sub.setSubmittedAt(rs.getTimestamp("submitted_at"));
-                    int mark = rs.getInt("mark");
-                    sub.setMark(rs.wasNull() ? null : mark);
-                    sub.setLecturerComment(rs.getString("lecturer_comment"));
-                    sub.setStudentName(rs.getString("student_name"));
-                    submissions.add(sub);
-                }
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                AssignmentSubmission sb = new AssignmentSubmission();
+                sb.setId(rs.getInt("id"));
+                sb.setAssignmentId(rs.getInt("assignment_id"));
+                sb.setStudentId(rs.getInt("student_id"));
+                sb.setFileUrl(rs.getString("file_url"));
+                sb.setAnswerText(rs.getString("answer_text"));
+                sb.setSubmittedAt(rs.getTimestamp("submitted_date"));
+                sb.setStudentName(rs.getString("student_name"));
+                student_submitted.add(sb);
             }
+
+        } catch(SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL ERROR: " + e.getMessage());
         }
-        return submissions;
+
+        return student_submitted;
     }
-
-    /**
-     * Saves lecturer's mark and comment for a submission.
-     */
-    public boolean markSubmission(int submissionId, int mark,
-                                  String comment) throws SQLException {
-
-        String sql = "UPDATE assignment_submissions " +
-                     "SET mark = ?, lecturer_comment = ? " +
-                     "WHERE id = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, mark);
-            ps.setString(2, comment);
-            ps.setInt(3, submissionId);
-            return ps.executeUpdate() == 1;
+    
+     // MARK SUBMISSION
+    public Boolean markAssigment(int submittion_id, int mark, String lecturer_comment, int lecturer_id){
+        
+        try{
+            
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+            
+            String query = "SELECT s.id FROM assignment_submissions s JOIN assignments a ON a.id = s.assignment_id WHERE s.id = ? AND a.lecturer_id = ?";
+            PreparedStatement check = con.prepareStatement(query);
+            check.setInt(1, submittion_id);
+            check.setInt(2, lecturer_id);
+            ResultSet checkId = check.executeQuery();
+            
+            if(checkId.next()){
+                String sql = "UPDATE assignment_submissions SET mark=?, lecturer_comment=? WHERE id=?";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setInt(1, mark);
+                ps.setString(2,lecturer_comment);
+                ps.setInt(3, submittion_id);
+                int rowsAffected = ps.executeUpdate();
+                
+                stmt.close();
+                con.close();
+                return rowsAffected > 0;
+            }else {
+                checkId.close();
+                stmt.close();
+                con.close();
+                
+                return false;
+            }
+             
+        }catch(SQLException ex){
+            Logger.getLogger(AssignmentDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return false;
     }
 }

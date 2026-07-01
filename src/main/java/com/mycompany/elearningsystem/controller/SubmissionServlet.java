@@ -2,6 +2,7 @@ package com.mycompany.elearningsystem.controller;
 
 import com.mycompany.elearningsystem.model.Submission;
 import com.mycompany.elearningsystem.dao.SubmissionDAO;
+import com.mycompany.elearningsystem.model.AssignmentSubmission;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -108,11 +109,11 @@ public class SubmissionServlet extends HttpServlet {
             return;
         }
 
-        Submission submission = new Submission();
+        AssignmentSubmission submission = new AssignmentSubmission();
         submission.setAssignmentId(assignmentId);
         submission.setStudentId(userId);
         submission.setAnswerText(answerText);
-        submission.setFilePath(fileUrl);
+        submission.setFileUrl(fileUrl);
 
         // Insert to DB
         submissionDAO.insertSubmission(submission);

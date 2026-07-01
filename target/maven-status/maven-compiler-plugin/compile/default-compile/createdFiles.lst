@@ -3,6 +3,7 @@ com\mycompany\elearningsystem\model\QuizOption.class
 com\mycompany\elearningsystem\controller\LoginServlet.class
 com\mycompany\elearningsystem\model\AssignmentSubmission.class
 com\mycompany\elearningsystem\dao\UserDAO.class
+com\mycompany\elearningsystem\util\DateUtil.class
 com\mycompany\elearningsystem\controller\AssignmentServlet.class
 com\mycompany\elearningsystem\controller\NoteServlet.class
 com\mycompany\elearningsystem\model\Course.class
@@ -14,11 +15,13 @@ com\mycompany\elearningsystem\model\CourseLecturer.class
 com\mycompany\elearningsystem\controller\AdminUserServlet.class
 com\mycompany\elearningsystem\model\Comment.class
 com\mycompany\elearningsystem\model\Enrollment.class
+com\mycompany\elearningsystem\model\QuizAttemptResult.class
 com\mycompany\elearningsystem\model\Submission.class
 com\mycompany\elearningsystem\controller\DiscussionServlet.class
 com\mycompany\elearningsystem\filter\SessionFilter.class
 com\mycompany\elearningsystem\model\Note.class
 com\mycompany\elearningsystem\controller\EnrollmentServlet.class
+com\mycompany\elearningsystem\controller\QuizServlet$ResultStats.class
 com\mycompany\elearningsystem\dao\SubmissionDAO.class
 com\mycompany\elearningsystem\model\QuizAttempt.class
 com\mycompany\elearningsystem\util\DBConnection.class

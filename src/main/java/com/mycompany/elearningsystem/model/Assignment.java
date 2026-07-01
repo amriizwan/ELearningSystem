@@ -23,6 +23,35 @@ public class Assignment {
     private String status;
     
     private Submission submission;
+    
+    private int assignment_count;
+    private int ungraded_count;
+    private int enroll_count;
+
+    public int getUngraded_count() {
+        return ungraded_count;
+    }
+
+    public void setUngraded_count(int ungraded_count) {
+        this.ungraded_count = ungraded_count;
+    }
+
+    public int getEnroll_count() {
+        return enroll_count;
+    }
+
+    public void setEnroll_count(int enroll_count) {
+        this.enroll_count = enroll_count;
+    }
+
+    public int getAssignment_count() {
+        return assignment_count;
+    }
+
+    public void setAssignment_count(int assignment_count) {
+        this.assignment_count = assignment_count;
+    }
+
 
     public Assignment() {}
 

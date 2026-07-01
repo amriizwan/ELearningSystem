@@ -22,6 +22,16 @@ public class Note {
     // Extra fields for display (joined from other tables)
     private String courseName;
     private String lecturerName;
+    
+    private int noteCount;
+
+    public int getNoteCount() {
+        return noteCount;
+    }
+
+    public void setNoteCount(int noteCount) {
+        this.noteCount = noteCount;
+    }
 
     public Note() {}
 

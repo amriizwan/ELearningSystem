@@ -18,6 +18,25 @@ public class Quiz {
     private String quizCode;
     private Timestamp createdAt;
     
+    private int attemptCount;
+
+    public int getAttemptCount() {
+        return attemptCount;
+    }
+
+    public void setAttemptCount(int attemptCount) {
+        this.attemptCount = attemptCount;
+    }
+
+    public double getAvgScore() {
+        return avgScore;
+    }
+
+    public void setAvgScore(double avgScore) {
+        this.avgScore = avgScore;
+    }
+    private double avgScore;
+    
     private QuizAttempt quizAttempt;
 
     public void setQuizAttempt(QuizAttempt quizAttempt) {

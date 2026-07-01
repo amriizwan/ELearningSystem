@@ -8,6 +8,7 @@ import com.mycompany.elearningsystem.model.Enrollment;
 import com.mycompany.elearningsystem.dao.EnrollmentDAO;
 import com.mycompany.elearningsystem.model.Note;
 import com.mycompany.elearningsystem.dao.NoteDAO;
+import com.mycompany.elearningsystem.model.CourseLecturer;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -111,16 +112,28 @@ public class CourseServlet extends HttpServlet {
                     
 
                 case "lecturer":
-//                    List<Course> allForLecturer = courseDAO.getAllCourses();
-//                    List<Course> myCourses = courseDAO.getCoursesByLecturer(userId);
-//                    if (allForLecturer.isEmpty()) {
-//                        req.setAttribute("error", "No course available");
-//                    }
-//                    req.setAttribute("allCourses", allForLecturer);
-//                    req.setAttribute("myCourses", myCourses);
-//                    req.getRequestDispatcher("/WEB-INF/views/lecturer/course.jsp").forward(req, resp);
-//                    break;
+                    List<CourseLecturer> cl = courseDAO.getCourses(userId);
+                    String show = "all";
+                    if ("teaching".equals(req.getParameter("show"))) {
+                        show = "teaching";
+                    }
+                    
+                    //css for course icon
+//                    List<String> palettes;
+//                palettes = Arrays.asList(
+//                        "bg-emerald-50 text-emerald-600",
+//                        "bg-violet-50 text-violet-600",
+//                        "bg-amber-50 text-amber-600",
+//                        "bg-blue-50 text-blue-600",
+//                        "bg-rose-50 text-rose-600",
+//                        "bg-teal-50 text-teal-600"
+//                );
 
+//                    req.setAttribute("palettes", palettes);
+                    req.setAttribute("courses", cl);
+                    req.setAttribute("show", show);
+                    req.getRequestDispatcher("/WEB-INF/views/lecturer/course.jsp").forward(req, resp);
+                    
                 case "admin":
                     List<Course> adminCourses = courseDAO.getAllCoursesWithCount();
                     req.setAttribute("courses", adminCourses);
@@ -143,20 +156,21 @@ public class CourseServlet extends HttpServlet {
         String action = req.getParameter("action");
         int courseId = Integer.parseInt(req.getParameter("courseId"));
 
+        String submit = req.getParameter("submit");
+        if(submit.equals("buttonCourse")){
+            int lecturerId = (Integer) session.getAttribute("userId");
+         
+            if(action.equals("uassign")){
+                Boolean courseUnassign = courseDAO.CoursesUnassign(lecturerId , courseId);
+                session.setAttribute("success", "Course removed from your teaching list.");
+            }else if(action.equals("assign")){
+                 Boolean courseAssign = courseDAO.CoursesAssign(lecturerId , courseId);
+                 session.setAttribute("success", "Course added to your teaching list!.");
+            }
+        }
+        
         try {
             switch (action) {
-                case "teach":
-                    if (!courseDAO.isTeaching(userId, courseId)) {
-                        courseDAO.assignLecturer(userId, courseId);
-                        session.setAttribute("success", "You are now teaching this course");
-                    }
-                    break;
-
-                case "stopteach":
-                    courseDAO.removeLecturer(userId, courseId);
-                    session.setAttribute("success", "You have stopped teaching this course");
-                    break;
-
                 case "create":
                     String newTitle = req.getParameter("title");
                     String newDesc = req.getParameter("description");

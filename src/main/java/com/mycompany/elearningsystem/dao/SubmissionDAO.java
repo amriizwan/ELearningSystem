@@ -4,6 +4,7 @@
  */
 package com.mycompany.elearningsystem.dao;
 
+import com.mycompany.elearningsystem.model.AssignmentSubmission;
 import com.mycompany.elearningsystem.model.Submission;
 import com.mycompany.elearningsystem.util.DBConnection;
 import java.sql.Connection;
@@ -16,7 +17,7 @@ import java.sql.SQLException;
  * @author amri1
  */
 public class SubmissionDAO {
-    public boolean insertSubmission(Submission submission){
+    public boolean insertSubmission(AssignmentSubmission submission){
 
         boolean success = false;
 
@@ -32,7 +33,7 @@ public class SubmissionDAO {
 
             ps.setInt(1, submission.getAssignmentId());
             ps.setInt(2, submission.getStudentId());
-            ps.setString(3, submission.getFilePath());
+            ps.setString(3, submission.getFileUrl());
             ps.setString(4, submission.getAnswerText());
 
             success = ps.executeUpdate() > 0;

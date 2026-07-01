@@ -19,11 +19,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @WebServlet("/note")
-@MultipartConfig
+@MultipartConfig(
+    fileSizeThreshold = 1024 * 1024,
+    maxFileSize = 1024 * 1024 * 20,     //20MB
+    maxRequestSize = 1024 * 1024 * 50   //50MB
+)
 public class NoteServlet extends HttpServlet {
     private final NoteDAO noteDAO = new NoteDAO();
     private final CourseDAO courseDAO = new CourseDAO();
@@ -38,30 +43,38 @@ public class NoteServlet extends HttpServlet {
         String role = (String) session.getAttribute("role");
         int userId = (int) session.getAttribute("userId");
 
-        try {
-            if ("student".equals(role)) {
-                
-            } else if ("lecturer".equals(role)) {
-
-                // UC015 Step 1: get all notes by this lecturer
-                List<Note> notes = noteDAO.getNotesByLecturer(userId);
-                List<Course> myCourses = courseDAO.getCoursesByLecturer(userId);
-
-                // UC015 E1: lecturer has no courses
-                if (myCourses.isEmpty()) {
-                    req.setAttribute("error", "No courses available.");
-                }
-
-                req.setAttribute("notes", notes);
-                req.setAttribute("myCourses", myCourses);
-                req.getRequestDispatcher("/WEB-INF/views/lecturer/note.jsp").forward(req, resp);
-
-            } else {
-                resp.sendRedirect(req.getContextPath() + "/login");
+        if ("student".equals(role)) {
+            
+        } else if ("lecturer".equals(role)) {
+            int lecture_id = (Integer) session.getAttribute("userId");
+            List<Note> noteList = noteDAO.getAllNote(lecture_id);
+            
+            String courses_idStr = req.getParameter("course_id");
+            if(courses_idStr != null){
+                int courses_id = Integer.parseInt(courses_idStr);
+                List<Note> listNote = noteDAO.getSelectedCourse(courses_id,lecture_id );
+                req.setAttribute("listNote", listNote);
+            }else {
+                // No course_id was provided
+                List<Note> listNote = new ArrayList();
+                req.setAttribute("listNote", listNote); // or another default
             }
-
-        } catch (SQLException e) {
-            throw new ServletException("Database error loading notes", e);
+            
+            String editFilter = req.getParameter("edit");
+            if(editFilter != null){
+                int edit = Integer.parseInt(editFilter);
+                Note selectedNote = noteDAO.getSelectedNote(edit,lecture_id );
+                req.setAttribute("selectedNote", selectedNote);
+            }else {
+                // No course_id was provided
+                req.setAttribute("selectedNote", 0); // or another default
+            }
+            req.setAttribute("noteList", noteList);
+            
+            req.getRequestDispatcher("/WEB-INF/views/lecturer/note.jsp").forward(req, resp);
+            
+        } else {
+            resp.sendRedirect(req.getContextPath() + "/login");
         }
     }
 
@@ -74,117 +87,78 @@ public class NoteServlet extends HttpServlet {
         HttpSession session = req.getSession(false);
         int userId = (int) session.getAttribute("userId");
         String action = req.getParameter("action");
+        int lecture_id = (Integer) session.getAttribute("userId");
+        boolean is_true = false;
+        String course_idStr = req.getParameter("course_id");
         
-        try {
-            switch (action) {
-
-                // UC015 Step 2: Upload new note
-                case "upload":
-                    int courseId   = Integer.parseInt(req.getParameter("courseId"));
-                    String title   = req.getParameter("title");
-                    String type    = req.getParameter("type");    // "pdf" or "video"
-//                    String fileUrl = req.getParameter("fileUrl");
-
-                    if (title == null || title.trim().isEmpty()) {
-                        session.setAttribute("error", "Note title cannot be empty");
-                        resp.sendRedirect(req.getContextPath() + "/note");
-                        return;
-                    }
-                    
-                    Part part = req.getPart("file");
-                    if (part == null || part.getSize() == 0) {
-                        session.setAttribute("error", "Please select a file to upload");
-                        resp.sendRedirect(req.getContextPath() + "/note");
-                        return;
-                    }
-                    String contentType = part.getContentType();
-
-                    if (!(contentType.equals("application/pdf")
-                            || contentType.startsWith("video/"))) {
-
-                        session.setAttribute("error",
-                                "Only PDF and Video files are allowed.");
-
-                        resp.sendRedirect(req.getContextPath() + "/note");
-                        return;
-                    }
-                    
-                    // Validate file type based on selected type
-                    if ("pdf".equals(type)) {
-                        if (contentType.startsWith("video/")) {
-                            session.setAttribute("error",
-                                    "Please upload a PDF file.");
-                            resp.sendRedirect(req.getContextPath() + "/note");
-                            return;
-                        }
-                    } else if ("video".equals(type)) {
-                        if (contentType.equals("application/pdf")) {
-                            session.setAttribute("error",
-                                    "Please upload a video.");
-                            resp.sendRedirect(req.getContextPath() + "/note");
-                            return;
-                        }
-                    }
-                    
-                    String uploadPath = getServletContext().getRealPath("/uploads/notes");
-
-                    File dir = new File(uploadPath);
-                    if (!dir.exists()) {
-                        dir.mkdirs();
-                    }
-                    
-                    String fileName = Paths.get(part.getSubmittedFileName())
-                                           .getFileName()
-                                           .toString();
-                    String extension = "";
-
-                    int dot = fileName.lastIndexOf('.');
-
-                    if (dot != -1) {
-                        extension = fileName.substring(dot);
-                    }
-
-                    String fileName2 = UUID.randomUUID().toString().substring(0, 8) + "-" + title.trim() + extension;
-
-                    String filePath = uploadPath + File.separator + fileName2;
-                    
-
-                    try (InputStream input = part.getInputStream()) {
-                        Files.copy(input, Paths.get(filePath),
-                                StandardCopyOption.REPLACE_EXISTING);
-                    }
-                   
-                    String fileUrl = "uploads/notes/" + fileName2;
-                    
-                    noteDAO.uploadNote(courseId, userId, title.trim(), type, fileUrl);
-                    session.setAttribute("success",
-                            "Note uploaded successfully");
-                    
-                    break;
-
-                // UC015 Step 3: Edit note title
-                case "edit":
-                    int editNoteId   = Integer.parseInt(req.getParameter("noteId"));
-                    String newTitle  = req.getParameter("title");
-
-                    if (newTitle == null || newTitle.trim().isEmpty()) {
-                        session.setAttribute("error", "Note title cannot be empty");
-                    } else {
-                        noteDAO.updateNoteTitle(editNoteId, userId, newTitle.trim());
-                        session.setAttribute("success", "Note updated successfully");
-                    }
-                    break;
-
-                // UC015 Step 4: Delete note
-                case "delete":
-                    int deleteNoteId = Integer.parseInt(req.getParameter("noteId"));
-                    noteDAO.deleteNote(deleteNoteId, userId);
-                    session.setAttribute("success", "Note deleted successfully");
-                    break;
-            }
-
-        } catch (SQLException e) {
-            throw new ServletException("Database error processing note action", e);
+        switch (action) {
+            
+            // Upload new note
+            case "upload_note":
+                int courses_id = Integer.parseInt(course_idStr);
+                String title = req.getParameter("title");
+                String type = req.getParameter("type");
+                //file
+                Part filePart = req.getPart("note_file");
+                
+                if (filePart == null || filePart.getSize() == 0) {
+                    session.setAttribute("error", "Please select a file to upload");
+                    resp.sendRedirect(req.getContextPath() +
+                            "/note?course_id=" + courses_id +"&new=1");
+                    return;
+                }
+                
+                String contentType = filePart.getContentType();
+                
+                String uploadPath = getServletContext().getRealPath("/uploads/notes");
+                
+                File dir = new File(uploadPath);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                String fileName = Paths.get(filePart.getSubmittedFileName())
+                        .getFileName()
+                        .toString();
+                String extension = "";
+                
+                int dot = fileName.lastIndexOf('.');
+                
+                if (dot != -1) {
+                    extension = fileName.substring(dot);
+                }
+                String fileName2 = UUID.randomUUID().toString().substring(0, 8) + "-" + courses_id + extension;
+                
+                String filePath = uploadPath + File.separator + fileName2;
+                
+                try (InputStream input = filePart.getInputStream()) {
+                    Files.copy(input, Paths.get(filePath),
+                            StandardCopyOption.REPLACE_EXISTING);
+                }
+                String fileUrl = "uploads/notes/" + fileName2;
+                
+                boolean uploadFile = noteDAO.uploadNote(courses_id, lecture_id, title, type, fileUrl);
+                if(uploadFile == true){
+                    is_true = true;
+                }
+                session.setAttribute("success", "Note uploaded successfully");
+                break;
+                
+                // Edit note title
+            case "edit_note":
+                String note_idStr = req.getParameter("note_id");
+                int note_id = Integer.parseInt(note_idStr);
+                String newTitle = req.getParameter("title");
+                Boolean updateNote = noteDAO.updateNote(note_id, newTitle, lecture_id);
+                session.setAttribute("success", "Note edited successfully");
+                break;
+                //  Delete note
+            case "delete_note":
+                String note_del = req.getParameter("note_id");
+                int note_idDel = Integer.parseInt(note_del);
+                
+                Boolean deleteNote = noteDAO.deleteNote(note_idDel);
+                session.setAttribute("success", "Note deleted successfully");
+                break;
         }
 
         resp.sendRedirect(req.getContextPath() + "/note");
