@@ -107,7 +107,7 @@
                                                             </c:choose>
                                                         </span>
                                                     </div>
-                                                    <a href="quiz?screen=result&quiz_id=${quiz.quizId}&attempt_id=${quiz.quizAttempt.attemptId}"
+                                                    <a href="quiz?screen=result&quiz_id=${quiz.id}&attempt_id=${quiz.quizAttempt.attemptId}"
                                                        class="block w-full text-center py-2.5 rounded-xl text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition">
                                                         View result
                                                     </a>
@@ -115,7 +115,7 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <div class="mt-auto">
-                                                    <a href="quiz?screen=entry&quiz_id=${quiz.quizId}"
+                                                    <a href="quiz?screen=entry&quiz_id=${quiz.id}"
                                                        class="block w-full text-center py-2.5 rounded-xl text-sm font-medium
                                                               ${in_progress ? 'bg-amber-500 text-white hover:bg-amber-600' : 'bg-gray-900 text-white hover:bg-gray-700'} transition">
                                                         ${in_progress ? 'Resume quiz' : 'Enter code & start'}
@@ -174,7 +174,7 @@
                             </c:if>
 
                             <form method="POST" action="quiz?screen=entry">
-                                <input type="hidden" name="quiz_id" value="${quizDetails.quizId}"/>
+                                <input type="hidden" name="quiz_id" value="${quizDetails.id}"/>
 
                                 <label class="block text-xs font-medium text-gray-700 mb-3 text-center">Quiz code</label>
                                 <!-- 6 individual boxes -->
@@ -267,19 +267,19 @@
                                             <c:forEach var="opt" items="${question.options}">
                                                 <label class="option-label flex items-center gap-3 p-3.5 border border-gray-200 rounded-xl cursor-pointer
                                                               hover:border-indigo-300 hover:bg-indigo-50 transition
-                                                              ${question.savedAnswer == opt.optionId ? 'border-indigo-400 bg-indigo-50' : '' }"
-                                                       id="label-${question.questionId}-${opt.optionId}">
+                                                              ${question.savedAnswer == opt.id ? 'border-indigo-400 bg-indigo-50' : '' }"
+                                                       id="label-${question.id}-${opt.id}">
                                                     <input type="radio"
-                                                           name="answers[${question.questionId}]"
-                                                           value="${opt.optionId}"
-                                                           ${question.savedAnswer == opt.optionId ? 'checked' : '' }
-                                                           onchange="selectOption(${status.index}, ${question.questionId}, ${opt.optionId})"
+                                                           name="answers[${question.id}]"
+                                                           value="${opt.id}"
+                                                           ${question.savedAnswer == opt.id ? 'checked' : '' }
+                                                           onchange="selectOption(${status.index}, ${question.id}, ${opt.id})"
                                                            class="hidden"/>
                                                     <div class="w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition
-                                                                ${question.savedAnswer == opt.optionId ? 'border-indigo-500 bg-indigo-500' : 'border-gray-300' }"
-                                                         id="circle-${question.questionId}-${opt.optionId}">
-                                                        <div class="w-2 h-2 rounded-full bg-white ${question.savedAnswer == opt.optionId ? '' : 'hidden' }"
-                                                             id="dot-inner-${question.questionId}-${opt.optionId}"></div>
+                                                                ${question.savedAnswer == opt.id ? 'border-indigo-500 bg-indigo-500' : 'border-gray-300' }"
+                                                         id="circle-${question.id}-${opt.id}">
+                                                        <div class="w-2 h-2 rounded-full bg-white ${question.savedAnswer == opt.id ? '' : 'hidden' }"
+                                                             id="dot-inner-${question.id}-${opt.id}"></div>
                                                     </div>
                                                     <span class="text-sm text-gray-700">${opt.optionText}</span>
                                                 </label>

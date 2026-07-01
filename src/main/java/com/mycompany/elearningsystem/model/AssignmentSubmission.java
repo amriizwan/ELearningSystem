@@ -19,11 +19,34 @@ public class AssignmentSubmission {
     private Timestamp submittedAt;
     private Integer mark;           // nullable — null means not yet marked
     private String lecturerComment;
+    private int maxMarks;
+
+    public int getMaxMarks() {
+        return maxMarks;
+    }
+
+    public void setMaxMarks(int maxMarks) {
+        this.maxMarks = maxMarks;
+    }
+
 
     // Extra fields for display
     private String studentName;
     private String assignmentTitle;
     private String courseName;
+    
+    private String initials;
+    private String timeAgo;
+    
+    private String title;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public AssignmentSubmission() {}
 
@@ -62,4 +85,20 @@ public class AssignmentSubmission {
 
     // Helper — true if lecturer has already marked this submission
     public boolean isMarked() { return mark != null; }
+    
+    public String getInitials() {
+    return initials;
+}
+
+    public void setInitials(String initials) {
+        this.initials = initials;
+    }
+
+    public String getTimeAgo() {
+        return timeAgo;
+    }
+
+    public void setTimeAgo(String timeAgo) {
+        this.timeAgo = timeAgo;
+    }
 }

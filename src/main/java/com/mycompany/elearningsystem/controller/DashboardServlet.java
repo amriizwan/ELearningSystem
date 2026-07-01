@@ -2,6 +2,9 @@ package com.mycompany.elearningsystem.controller;
 
 import com.mycompany.elearningsystem.dao.DashboardDAO;
 import com.mycompany.elearningsystem.dao.EnrollmentDAO;
+import com.mycompany.elearningsystem.model.AssignmentSubmission;
+import com.mycompany.elearningsystem.model.Course;
+import com.mycompany.elearningsystem.model.QuizAttemptResult;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -30,21 +33,24 @@ public class DashboardServlet extends HttpServlet {
         HttpSession session = req.getSession(false);
         String role = (String) session.getAttribute("role");
         int userId = (int) session.getAttribute("userId");
+        
+        LocalTime now = LocalTime.now();
+        String greeting;
+
+        if (now.getHour() < 12) {
+            greeting = "Good morning";
+        } else if (now.getHour() < 17) {
+            greeting = "Good afternoon";
+        } else {
+            greeting = "Good evening";
+        }
+        
+        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy"));
 
         try {
             switch (role) {
 
                 case "student":
-                    LocalTime now = LocalTime.now();
-                    String greeting;
-
-                    if (now.getHour() < 12) {
-                        greeting = "Good morning";
-                    } else if (now.getHour() < 17) {
-                        greeting = "Good afternoon";
-                    } else {
-                        greeting = "Good evening";
-                    }
 
                 // for color palettes        
                     List<Map<String, String>> palettes = new ArrayList<>();
@@ -69,9 +75,6 @@ public class DashboardServlet extends HttpServlet {
                     p4.put("bar", "bg-blue-500");
                     palettes.add(p4);
 
-                    String today = LocalDate.now()
-                            .format(DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy"));
-
                     req.setAttribute("greeting", greeting);
                     req.setAttribute("palettes", palettes);
                     req.setAttribute("today", today);
@@ -88,10 +91,50 @@ public class DashboardServlet extends HttpServlet {
                     
 
                 case "lecturer":
-//                    req.setAttribute("myCourses", dashboardDAO.getLecturerCourses(userId));
-//                    req.setAttribute("pendingSubmissions", dashboardDAO.getPendingSubmissions(userId));
-//                    req.getRequestDispatcher("/WEB-INF/views/lecturer/dashboard.jsp").forward(req, resp);
-//                    break;
+                    int    lecturerId   = (Integer) session.getAttribute("userId");
+                    String lecturerName = (String)  session.getAttribute("name");
+                    String firstName;
+                    if (lecturerName == null || lecturerName.isEmpty()) {
+                        firstName = "";
+                    }
+                    else{
+                        firstName = lecturerName.split(" ")[0];
+                    }
+
+                    // ── 3. Call DAO methods ──────────────────────────────────────────────
+                    DashboardDAO dahboardDAO = new DashboardDAO();
+
+                    int course_count  = dahboardDAO.getCourseCount(lecturerId);
+                    int student_count = dahboardDAO.getStudentCount(lecturerId);
+                    int pending_mark  = dahboardDAO.getPendingMarkCount(lecturerId);
+                    int notes_count   = dahboardDAO.getNotesCount(lecturerId);
+                    int quiz_count    = dahboardDAO.getQuizCount(lecturerId);
+
+                    ArrayList<Course>     courses             = dahboardDAO.getCourses(lecturerId);
+                    ArrayList<AssignmentSubmission> pending_submissions  = dahboardDAO.getPendingSubmissions(lecturerId);
+                    ArrayList<QuizAttemptResult> recent_attempts     = dahboardDAO.getRecentAttempts(lecturerId);
+//                    ArrayList<ForumPost>  recent_posts         = dahboardDAO.getRecentPosts(lecturerId);
+
+
+                    // ── 5. Pass data to JSP via request attributes ───────────────────────
+                    req.setAttribute("firstName",           firstName);
+                    req.setAttribute("greeting",            greeting);
+                    req.setAttribute("today",               today);
+
+                    req.setAttribute("course_count",        course_count);
+                    req.setAttribute("student_count",       student_count);
+                    req.setAttribute("pending_mark",        pending_mark);
+                    req.setAttribute("notes_count",         notes_count);
+                    req.setAttribute("quiz_count",          quiz_count);
+
+                    req.setAttribute("courses",             courses);
+                    req.setAttribute("pending_submissions", pending_submissions);
+                    req.setAttribute("recent_attempts",     recent_attempts);
+//                    req.setAttribute("recent_posts",        recent_posts);
+
+                    // ── 6. Forward to JSP ────────────────────────────────────────────────
+                    req.getRequestDispatcher("/WEB-INF/views/lecturer/dashboard.jsp").forward(req, resp);
+
 
                 case "admin":
                     req.setAttribute("stats", dashboardDAO.getAdminStats());

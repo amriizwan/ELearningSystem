@@ -1,13 +1,17 @@
 package com.mycompany.elearningsystem.dao;
 
 import com.mycompany.elearningsystem.model.Course;
+import com.mycompany.elearningsystem.model.CourseLecturer;
 import com.mycompany.elearningsystem.util.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CourseDAO {
     // --- STUDENT ---
@@ -118,7 +122,128 @@ public class CourseDAO {
 
     // --- LECTURER ---
 
-    public List<Course> getCoursesByLecturer(int lecturerId) throws SQLException {
+    public Boolean getCoursesById(int lecturer_id, int course_id){
+        try{          
+            Connection con = DBConnection.getConnection();            
+            Statement stmt = con.createStatement();
+                    
+            String sql = "SELECT id FROM course_lecturer WHERE lecturer_id = ? AND course_id = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            
+            ps.setInt(1, lecturer_id);
+            ps.setInt(2, course_id);
+            
+            int rs = ps.executeUpdate();
+            stmt.close();
+            con.close();
+            return rs > 0;
+        }catch(SQLException ex){
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
+    }
+    public List<CourseLecturer> getCourses(int lecture_id){
+        List<CourseLecturer> courselist = new ArrayList<>();
+        try{
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+                    
+            String sql = "SELECT c.id, c.title, c.description," +
+                        "           COUNT(DISTINCT e.student_id)  AS student_count," +
+                        "           COUNT(DISTINCT n.id)          AS note_count," +
+                        "           COUNT(DISTINCT a.id)          AS asgn_count," +
+                        "           COUNT(DISTINCT q.id)          AS quiz_count," +
+                        "           COUNT(DISTINCT cl2.lecturer_id) AS lecturer_count," +
+                        "           MAX(CASE WHEN cl.lecturer_id = ? THEN 1 ELSE 0 END) AS is_mine" +
+                        "    FROM courses c" +
+                        "    LEFT JOIN course_lecturer cl  ON cl.course_id  = c.id AND cl.lecturer_id = ?" +
+                        "    LEFT JOIN course_lecturer cl2 ON cl2.course_id = c.id" +
+                        "    LEFT JOIN enrollments e       ON e.course_id   = c.id" +
+                        "    LEFT JOIN notes n             ON n.course_id   = c.id AND n.lecturer_id  = ?" +
+                        "    LEFT JOIN assignments a       ON a.course_id   = c.id AND a.lecturer_id  = ?" +
+                        "    LEFT JOIN quizzes q           ON q.course_id   = c.id AND q.lecturer_id  = ?" +
+                        "    GROUP BY c.id" +
+                        "    ORDER BY is_mine DESC, c.title ASC";
+            
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1,lecture_id);
+            ps.setInt(2,lecture_id);
+            ps.setInt(3,lecture_id);
+            ps.setInt(4,lecture_id);
+            ps.setInt(5,lecture_id);
+            
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                CourseLecturer cl = new CourseLecturer();
+                cl.setId(rs.getString("id"));
+                cl.setStudent_count(rs.getInt("student_count"));
+                cl.setNote_count(rs.getInt("note_count"));
+                cl.setAsgn_count(rs.getInt("asgn_count"));
+                cl.setQuiz_count(rs.getInt("quiz_count"));
+                cl.setLecturer_count(rs.getInt("lecturer_count"));
+                cl.setIs_mine(rs.getInt("is_mine"));
+                cl.setTitle(rs.getString("title"));
+                cl.setDescription(rs.getString("description"));
+                courselist.add(cl);
+            }
+            stmt.close();
+            con.close();
+            return courselist;
+        }catch(SQLException ex){
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return courselist;
+    }
+    
+    public Boolean CoursesUnassign(int lecturer_id, int course_id ){
+        try{
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+                    
+            String sql = "DELETE FROM course_lecturer WHERE lecturer_id = ? AND course_id = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            
+            ps.setInt(1, lecturer_id);
+            ps.setInt(2, course_id);
+            
+            int rs = ps.executeUpdate();
+            stmt.close();
+            con.close();
+            return rs > 0;
+            
+        }catch(SQLException ex){
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
+    }
+    
+    public Boolean CoursesAssign(int lecturer_id, int course_id ){
+        try{
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+                    
+            String sql = "INSERT INTO course_lecturer (course_id, lecturer_id) VALUES (?, ?)";
+            PreparedStatement ps = con.prepareStatement(sql);
+            
+            ps.setInt(2, lecturer_id);
+            ps.setInt(1, course_id);
+            
+            int rs = ps.executeUpdate();
+            stmt.close();
+            con.close();
+            return rs > 0;
+            
+        }catch(SQLException ex){
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
+    }
+
+        public List<Course> getCoursesByLecturer(int lecturerId) throws SQLException {
         List<Course> courses = new ArrayList<>();
         String sql = "SELECT c.id, c.title, c.description, c.created_at " +
                      "FROM courses c JOIN course_lecturer cl ON cl.course_id = c.id " +
@@ -139,39 +264,8 @@ public class CourseDAO {
         }
         return courses;
     }
-
-    public boolean isTeaching(int lecturerId, int courseId) throws SQLException {
-        String sql = "SELECT id FROM course_lecturer WHERE lecturer_id = ? AND course_id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, lecturerId);
-            ps.setInt(2, courseId);
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next();
-            }
-        }
-    }
-
-    public boolean assignLecturer(int lecturerId, int courseId) throws SQLException {
-        String sql = "INSERT INTO course_lecturer (course_id, lecturer_id) VALUES (?, ?)";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, courseId);
-            ps.setInt(2, lecturerId);
-            return ps.executeUpdate() == 1;
-        }
-    }
-
-    public boolean removeLecturer(int lecturerId, int courseId) throws SQLException {
-        String sql = "DELETE FROM course_lecturer WHERE lecturer_id = ? AND course_id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, lecturerId);
-            ps.setInt(2, courseId);
-            return ps.executeUpdate() == 1;
-        }
-    }
-
+    
+    
     // --- ADMIN  ---
 
     public boolean createCourse(String title, String description) throws SQLException {

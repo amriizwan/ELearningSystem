@@ -163,10 +163,10 @@
                                 <c:forEach var="task" items="${tasks}">
                                     <div class="bg-white border border-gray-100 rounded-xl px-4 py-3 flex items-center gap-4
                                                 hover:border-gray-200 transition cursor-pointer"
-                                         onclick="location.href='AssignmentController'">
+                                         onclick="location.href='assignment'">
                                         <div class="w-2 h-2 rounded-full flex-shrink-0
-                                            ${task.urgency == 'overdue' ? 'bg-red-400'
-                                                : task.urgency == 'soon' ? 'bg-amber-400'
+                                            ${task.status == 'overdue' ? 'bg-red-400'
+                                                : task.status == 'soon' ? 'bg-amber-400'
                                                 : 'bg-emerald-400'}">
                                         </div>
                                         <div class="flex-1 min-w-0">
@@ -175,17 +175,17 @@
                                             </div>
 
                                             <div class="text-xs text-gray-400 truncate">
-                                                ${task.courseTitle} · ${task.lecturerName}
+                                                ${task.courseName} · ${task.lecturerName}
                                             </div>
                                         </div>
 
                                         <div class="text-xs flex-shrink-0">
                                             <c:choose>
-                                                <c:when test="${task.urgency == 'overdue'}">
+                                                <c:when test="${task.status == 'overdue'}">
                                                     <span class="text-red-500 font-medium">Overdue</span>
                                                 </c:when>
 
-                                                <c:when test="${task.urgency == 'soon'}">
+                                                <c:when test="${task.status == 'soon'}">
                                                     <span class="text-amber-600">${task.dueDate}</span>
                                                 </c:when>
 

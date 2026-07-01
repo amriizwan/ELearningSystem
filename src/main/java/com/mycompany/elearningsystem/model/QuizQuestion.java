@@ -54,4 +54,8 @@ public class QuizQuestion {
 
     public List<QuizOption> getOptions() { return options; }
     public void setOptions(List<QuizOption> options) { this.options = options; }
+    
+    public String getDisplayType() {
+        return questionType == null ? "" : questionType.replace('_', ' ');
+    }
 }
