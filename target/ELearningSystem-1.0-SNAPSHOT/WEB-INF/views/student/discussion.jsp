@@ -2,8 +2,6 @@
 
 <!--Core tag   c:remove, c:if , c:choose, c:forEach  -->
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
-<!--Function  	fn:length() , -->
-<%@ taglib prefix = "fn" uri = "http://java.sun.com/jsp/jstl/functions" %> 
 
 <!DOCTYPE html>
 <html>
@@ -21,14 +19,21 @@
                     <span class="block text-xs text-gray-400 mt-0.5">Student portal</span>
                 </div>
                 <nav class="flex flex-col gap-0.5 flex-1">
-                    <a href="${pageContext.request.contextPath}/dashboard"   class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Dashboard</a>
-                    <a href="${pageContext.request.contextPath}/course"      class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">My Courses</a>
-                    <a href="${pageContext.request.contextPath}/note"        class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Notes</a>
-                    <a href="${pageContext.request.contextPath}/assignment"  class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Assignments</a>
-                    <a href="${pageContext.request.contextPath}/quiz"        class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Quiz</a>
-                    <a href="${pageContext.request.contextPath}/discussion"  class="px-4 py-2.5 text-sm font-medium bg-gray-50 text-gray-900">Discussion</a>
+                    <a href="${pageContext.request.contextPath}/dashboard"
+                       class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Dashboard</a>
+                    <a href="${pageContext.request.contextPath}/enrollment"
+                       class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Enroll</a>
+                    <a href="${pageContext.request.contextPath}/course"
+                       class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">My Courses</a>
+                    <a href="${pageContext.request.contextPath}/assignment"
+                       class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Assignments</a>
+                    <a href="${pageContext.request.contextPath}/quiz"
+                       class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Quiz</a>
+                    <a href="${pageContext.request.contextPath}/discussion"
+                       class="px-4 py-2.5 text-sm font-medium bg-gray-50 text-gray-900">Discussion</a>
                 </nav>
-                <a href="${pageContext.request.contextPath}/logout" class="px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 mt-auto">Logout</a>
+                <a href="${pageContext.request.contextPath}/logout"
+                   class="px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 mt-auto">Logout</a>
             </aside>
 
             <main class="ml-52 flex-1 flex">
@@ -53,7 +58,7 @@
                         <c:remove var="error" scope="session"/>
                     </c:if>
 
-                    <%--  Create post form --%>
+                    <%-- Create post form --%>
                     <div class="px-4 py-3 border-b border-gray-100">
                         <button onclick="toggleCreateForm()"
                                 class="w-full text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg">
@@ -83,7 +88,7 @@
                                               placeholder="Please help me solve this error..."
                                               class="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
                                 </div>
-                                <%--  Post button  --%>
+                                <%--  Post button --%>
                                 <button type="submit"
                                         class="w-full text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg">
                                     Post
@@ -92,7 +97,7 @@
                         </div>
                     </div>
 
-                    <%-- UC010 Step 1: Post list --%>
+                    <%-- Post list --%>
                     <div class="overflow-auto flex-1">
                         <c:choose>
                             <c:when test="${empty posts}">
@@ -147,10 +152,10 @@
                                     <%-- show edit/delete only for post owner --%>
                                     <c:if test="${selectedPost.userId == sessionScope.userId}">
                                         <div class="flex gap-2 ml-3">
-                                            <input type="hidden" id="currentPostId"      value="${fn:escapeXml(selectedPost.id)}"/>
-                                            <input type="hidden" id="currentPostTitle"   value="${fn:escapeXml(selectedPost.title)}"/>
-                                            <input type="hidden" id="currentPostContent" value="${fn:escapeXml(selectedPost.content)}"/>
-                                            <button onclick="showEditPost()" 
+                                            <button onclick="showEditPost(
+                                                        '${selectedPost.id}',
+                                                        '${selectedPost.title}',
+                                                        '${selectedPost.content}')"
                                                     class="text-xs border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-50">
                                                 Edit
                                             </button>
@@ -242,7 +247,7 @@
             </main>
         </div>
 
-        <%-- UC013 Edit post modal --%>
+        <%-- Edit post modal --%>
         <div id="editPostModal" class="hidden fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
             <div class="bg-white rounded-xl border border-gray-100 p-6 w-full max-w-lg">
                 <h2 class="text-sm font-medium text-gray-900 mb-4">Edit Post</h2>
@@ -279,13 +284,9 @@
                 const f = document.getElementById('createForm');
                 f.classList.toggle('hidden');
             }
-            function showEditPost() {
-                const id      = document.getElementById('currentPostId').value;
-                const title   = document.getElementById('currentPostTitle').value;
-                const content = document.getElementById('currentPostContent').value;
-
-                document.getElementById('editPostId').value      = id;
-                document.getElementById('editPostTitle').value   = title;
+            function showEditPost(id, title, content) {
+                document.getElementById('editPostId').value = id;
+                document.getElementById('editPostTitle').value = title;
                 document.getElementById('editPostContent').value = content;
                 document.getElementById('editPostModal').classList.remove('hidden');
             }

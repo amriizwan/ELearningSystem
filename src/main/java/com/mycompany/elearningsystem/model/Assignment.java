@@ -1,15 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.elearningsystem.model;
 
 import java.sql.Timestamp;
 
-/**
- *
- * @author amri1
- */
 public class Assignment {
     private int id;
     private int courseId;
@@ -25,6 +17,12 @@ public class Assignment {
     private String lecturerName;
     private boolean submitted;      // UC007 post condition — is student submitted?
     private int submissionCount;    // UC016 — how many students submitted
+    
+    private int submissionId;
+    private Timestamp submittedAt;
+    private String status;
+    
+    private Submission submission;
 
     public Assignment() {}
 
@@ -63,4 +61,71 @@ public class Assignment {
 
     public int getSubmissionCount() { return submissionCount; }
     public void setSubmissionCount(int submissionCount) { this.submissionCount = submissionCount; }
+    
+    public int getSubmissionId() {
+        return submissionId;
+    }
+
+    public Timestamp getSubmittedAt() {
+        return submittedAt;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+    
+    public void setSubmissionId(int submissionId) {
+        this.submissionId = submissionId;
+    }
+
+    public void setSubmittedAt(Timestamp submittedAt) {
+        this.submittedAt = submittedAt;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    
+    public Submission getSubmission() {
+        return submission;
+    }
+    
+    public void setSubmission(Submission submission) {
+        this.submission = submission;
+    }
+    
+    
+    public String getStatusText() {
+        switch (status) {
+            case "marked": return "Marked";
+            case "submitted": return "Submitted";
+            case "overdue": return "Overdue";
+            case "due_soon": return "Due soon";
+            default: return "Upcoming";
+        }
+    }
+
+    public String getStatusClass() {
+        switch (status) {
+            case "marked":
+                return "bg-violet-100 text-violet-700";
+            case "submitted":
+                return "bg-emerald-100 text-emerald-700";
+            case "overdue":
+                return "bg-red-100 text-red-700";
+            case "due_soon":
+                return "bg-amber-100 text-amber-700";
+            default:
+                return "bg-gray-100 text-gray-600";
+        }
+    }
+    
+    public String getDueColor() {
+        switch (status) {
+            case "overdue": return "text-red-500";
+            case "due_soon": return "text-amber-600";
+            default: return "text-gray-500";
+        }
+    }
+    
 }

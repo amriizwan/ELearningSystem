@@ -1,10 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.elearningsystem.controller;
 
-import com.mycompany.elearningsystem.model.DashboardDAO;
+import com.mycompany.elearningsystem.dao.DashboardDAO;
+import com.mycompany.elearningsystem.dao.EnrollmentDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,15 +10,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-/**
- *
- * @author amri1
- */
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
 
     private final DashboardDAO dashboardDAO = new DashboardDAO();
+    private final EnrollmentDAO enrollmentDAO = new EnrollmentDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -34,18 +35,63 @@ public class DashboardServlet extends HttpServlet {
             switch (role) {
 
                 case "student":
-                    //a1 set attribute dekat page dashboard student, hantar object(arraylist) ke page
-                    req.setAttribute("enrolledCourses", dashboardDAO.getStudentCourses(userId));
-                    req.setAttribute("upcomingAssignments", dashboardDAO.getUpcomingAssignments(userId));
-                    req.setAttribute("recentQuizScores", dashboardDAO.getRecentQuizScores(userId));
+                    LocalTime now = LocalTime.now();
+                    String greeting;
+
+                    if (now.getHour() < 12) {
+                        greeting = "Good morning";
+                    } else if (now.getHour() < 17) {
+                        greeting = "Good afternoon";
+                    } else {
+                        greeting = "Good evening";
+                    }
+
+                // for color palettes        
+                    List<Map<String, String>> palettes = new ArrayList<>();
+
+                    Map<String, String> p1 = new HashMap<>();
+                    p1.put("badge", "bg-emerald-100 text-emerald-800");
+                    p1.put("bar", "bg-emerald-500");
+                    palettes.add(p1);
+
+                    Map<String, String> p2 = new HashMap<>();
+                    p2.put("badge", "bg-violet-100 text-violet-800");
+                    p2.put("bar", "bg-violet-500");
+                    palettes.add(p2);
+
+                    Map<String, String> p3 = new HashMap<>();
+                    p3.put("badge", "bg-amber-100 text-amber-800");
+                    p3.put("bar", "bg-amber-500");
+                    palettes.add(p3);
+
+                    Map<String, String> p4 = new HashMap<>();
+                    p4.put("badge", "bg-blue-100 text-blue-800");
+                    p4.put("bar", "bg-blue-500");
+                    palettes.add(p4);
+
+                    String today = LocalDate.now()
+                            .format(DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy"));
+
+                    req.setAttribute("greeting", greeting);
+                    req.setAttribute("palettes", palettes);
+                    req.setAttribute("today", today);
+                    req.setAttribute("enrolledCourses", enrollmentDAO.getEnrollmentsCourses(userId));
+                    req.setAttribute("enrolCourseCount", dashboardDAO.getTotalEnrolledCourses(userId));
+                    req.setAttribute("totalAsgnCount", dashboardDAO.getTotalAssignments(userId));
+                    req.setAttribute("overDueCount", dashboardDAO.getTotalOverdueAsgn(userId));
+                    req.setAttribute("avlQuizCount", dashboardDAO.getTotalAvlQuiz(userId));
+                    req.setAttribute("avgCount", dashboardDAO.getTotalAvgQuizScore(userId));
+                    req.setAttribute("tasks", dashboardDAO.getUpcomingTasks(userId));
+
                     req.getRequestDispatcher("/WEB-INF/views/student/dashboard.jsp").forward(req, resp);
                     break;
+                    
 
                 case "lecturer":
-                    req.setAttribute("myCourses", dashboardDAO.getLecturerCourses(userId));
-                    req.setAttribute("pendingSubmissions", dashboardDAO.getPendingSubmissions(userId));
-                    req.getRequestDispatcher("/WEB-INF/views/lecturer/dashboard.jsp").forward(req, resp);
-                    break;
+//                    req.setAttribute("myCourses", dashboardDAO.getLecturerCourses(userId));
+//                    req.setAttribute("pendingSubmissions", dashboardDAO.getPendingSubmissions(userId));
+//                    req.getRequestDispatcher("/WEB-INF/views/lecturer/dashboard.jsp").forward(req, resp);
+//                    break;
 
                 case "admin":
                     req.setAttribute("stats", dashboardDAO.getAdminStats());

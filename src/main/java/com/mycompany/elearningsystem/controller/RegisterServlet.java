@@ -4,7 +4,7 @@
  */
 package com.mycompany.elearningsystem.controller;
 
-import com.mycompany.elearningsystem.model.UserDAO;
+import com.mycompany.elearningsystem.dao.UserDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

@@ -5,6 +5,7 @@
 <!--Function  	fn:length() , -->
 <%@ taglib prefix = "fn" uri = "http://java.sun.com/jsp/jstl/functions" %> 
 
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -19,7 +20,7 @@
         <aside class="w-52 bg-white border-r border-gray-100 flex flex-col py-5 fixed h-full">
             <div class="px-4 mb-6">
                 <span class="text-base font-semibold text-gray-900">MyStudyZone</span>
-                <span class="block text-xs text-gray-400 mt-0.5">Lecturer portal</span>
+                <span class="block text-xs text-gray-400 mt-0.5">E-Learning System</span>
             </div>
             <nav class="flex flex-col gap-0.5 flex-1">
                 <a href="${pageContext.request.contextPath}/dashboard"
@@ -40,7 +41,6 @@
         </aside>
                
         <main class="ml-56 min-h-screen p-8">
-
             <!-- Header -->
             <div class="mb-8">
                 <h1 class="text-xl font-semibold text-gray-900">
@@ -54,7 +54,7 @@
 
             <!-- Stat cards -->
             <div class="grid grid-cols-4 gap-4 mb-8">
-
+                
                 <div class="bg-white border border-gray-100 rounded-xl p-5">
                     <p class="text-xs text-gray-400 mb-2">Enrolled courses</p>
                     <p class="text-3xl font-semibold text-gray-900">${enrolCourseCount}</p>
@@ -98,7 +98,6 @@
                     </div>
 
                     <c:choose>
-
                         <c:when test="${empty enrolledCourses}">
                             <div class="bg-white border border-gray-100 rounded-xl p-8 text-center">
                                 <p class="text-sm text-gray-400">
@@ -113,22 +112,15 @@
                         </c:when>
 
                         <c:otherwise>
-
                             <div class="grid grid-cols-1 gap-3">
-
                                 <c:forEach var="course" items="${enrolledCourses}" varStatus="status">
-
                                     <c:set var="palette" value="${palettes[status.index % 4]}" />
-
                                     <div class="bg-white border border-gray-100 rounded-xl p-4 hover:border-gray-200 transition cursor-pointer"
                                          onclick="location.href='course'">
-
                                         <div class="flex items-center justify-between mb-3">
-
                                             <span class="text-xs font-medium px-2.5 py-1 rounded-full ${palette.badge}">
-                                                ${course.courseCode}
+                                                ${course.title}
                                             </span>
-
                                         </div>
 
                                         <div class="text-xs text-gray-400 mb-3">
@@ -137,19 +129,14 @@
                                         </div>
 
                                         <div class="h-1 bg-gray-100 rounded-full overflow-hidden">
-<!--                                            <div class="h-full rounded-full ${palette.bar}"
+                                        <!--<div class="h-full rounded-full ${palette.bar}"
                                                  style="width:course.progress%">
                                             </div>-->
                                         </div>
-
                                     </div>
-
                                 </c:forEach>
-
                             </div>
-
                         </c:otherwise>
-
                     </c:choose>
                 </div>
 
@@ -161,7 +148,6 @@
                     </div>
 
                     <c:choose>
-
                         <c:when test="${empty tasks}">
                             <div class="bg-white border border-gray-100 rounded-xl p-8 text-center">
                                 <p class="text-sm text-gray-400">
@@ -175,19 +161,15 @@
                             <div class="flex flex-col gap-3">
 
                                 <c:forEach var="task" items="${tasks}">
-
                                     <div class="bg-white border border-gray-100 rounded-xl px-4 py-3 flex items-center gap-4
                                                 hover:border-gray-200 transition cursor-pointer"
                                          onclick="location.href='AssignmentController'">
-
                                         <div class="w-2 h-2 rounded-full flex-shrink-0
                                             ${task.urgency == 'overdue' ? 'bg-red-400'
                                                 : task.urgency == 'soon' ? 'bg-amber-400'
                                                 : 'bg-emerald-400'}">
                                         </div>
-
                                         <div class="flex-1 min-w-0">
-
                                             <div class="text-sm text-gray-900 truncate">
                                                 ${task.title}
                                             </div>
@@ -195,13 +177,10 @@
                                             <div class="text-xs text-gray-400 truncate">
                                                 ${task.courseTitle} · ${task.lecturerName}
                                             </div>
-
                                         </div>
 
                                         <div class="text-xs flex-shrink-0">
-
                                             <c:choose>
-
                                                 <c:when test="${task.urgency == 'overdue'}">
                                                     <span class="text-red-500 font-medium">Overdue</span>
                                                 </c:when>
@@ -213,22 +192,14 @@
                                                 <c:otherwise>
                                                     <span class="text-gray-400">${task.dueDate}</span>
                                                 </c:otherwise>
-
                                             </c:choose>
-
                                         </div>
-
                                     </div>
-
                                 </c:forEach>
-
                             </div>
-
                         </c:otherwise>
-
                     </c:choose>
                 </div>
-
             </div>
         </main>
     </body>
