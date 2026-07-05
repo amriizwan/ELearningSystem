@@ -211,7 +211,7 @@ public class AssignmentServlet extends HttpServlet {
 
                     Timestamp dueDate = Timestamp.valueOf(localDateTime);
 
-                    Boolean uploadAssignment = assignmentDAO.uploadAssignmnet(course_id, lecture_id, title, description, dueDate, max_marks);
+                    Boolean uploadAssignment = assignmentDAO.uploadAssignmnet(selectedCourseId, lecture_id, title, description, dueDate, max_marks);
                     session.setAttribute("success", "Assignment created!");
                     break;
                 }

@@ -2,43 +2,92 @@
 <%@ taglib prefix="c"   uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn"  uri="jakarta.tags.functions" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Quizzes — MyStudyZone Lecturer</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>.line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+        .line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    </style>
+    <title>Quizzes — MyStudyZone Lecturer</title>
 </head>
-<body class="bg-gray-50 text-gray-900">
+<body class="bg-slate-50 text-slate-900 antialiased">
 
-<%--
-    Replaces: require_once '../includes/lecturer_sidebar.php'
-    In Jakarta EE we use a static include for the sidebar partial.
---%>
-<aside class="w-52 bg-white border-r border-gray-100 flex flex-col py-5 fixed h-full">
-    <div class="px-4 mb-6">
-        <span class="text-base font-semibold text-gray-900">MyStudyZone</span>
-        <span class="block text-xs text-gray-400 mt-0.5">Lecturer portal</span>
+    <!-- Mobile top bar -->
+    <div class="lg:hidden sticky top-0 z-40 flex items-center justify-between bg-white border-b border-slate-200 px-4 py-3">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+                <i class="fa-solid fa-graduation-cap text-white text-sm"></i>
+            </div>
+            <span class="text-base font-bold text-slate-900">MyStudyZone</span>
+        </div>
+        <button id="menu-toggle" type="button" class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition">
+            <i class="fa-solid fa-bars text-lg"></i>
+        </button>
     </div>
-    <nav class="flex flex-col gap-0.5 flex-1">
-        <a href="${pageContext.request.contextPath}/dashboard"
-           class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Dashboard</a>
-        <a href="${pageContext.request.contextPath}/course"
-           class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">My Courses</a>
-        <a href="${pageContext.request.contextPath}/note"
-           class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Notes</a>
-        <a href="${pageContext.request.contextPath}/assignment"
-           class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Assignments</a>
-        <a href="${pageContext.request.contextPath}/quiz"
-           class="px-4 py-2.5 text-sm font-medium bg-gray-50 text-gray-900">Quiz</a>
-        <a href="${pageContext.request.contextPath}/discussion"
-           class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Discussion</a>
-    </nav>
-    <a href="${pageContext.request.contextPath}/logout"
-       class="px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 mt-auto">Logout</a>
-</aside>
+
+    <!-- Sidebar overlay (mobile) -->
+    <div id="sidebar-overlay" class="hidden fixed inset-0 bg-slate-900/40 z-30 lg:hidden"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-white border-r border-slate-100 flex flex-col py-6 fixed h-full z-40 -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out">
+        <div class="px-6 mb-8 hidden lg:flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm shadow-indigo-200">
+                <i class="fa-solid fa-graduation-cap text-white text-sm"></i>
+            </div>
+            <div>
+                <span class="block text-base font-bold text-slate-900 leading-tight">MyStudyZone</span>
+                <span class="block text-xs text-slate-400">Lecturer portal</span>
+            </div>
+        </div>
+        <nav class="flex flex-col gap-1 flex-1 px-3">
+            <a href="${pageContext.request.contextPath}/dashboard"
+               class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition">
+                <i class="fa-solid fa-gauge-high w-4 text-center"></i>
+                Dashboard
+            </a>
+            <a href="${pageContext.request.contextPath}/course"
+               class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition">
+                <i class="fa-solid fa-book-open w-4 text-center"></i>
+                My Courses
+            </a>
+            <a href="${pageContext.request.contextPath}/note"
+               class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition">
+                <i class="fa-solid fa-note-sticky w-4 text-center"></i>
+                Notes
+            </a>
+            <a href="${pageContext.request.contextPath}/assignment"
+               class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition">
+                <i class="fa-solid fa-file-lines w-4 text-center"></i>
+                Assignments
+            </a>
+            <a href="${pageContext.request.contextPath}/quiz"
+               class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold bg-indigo-50 text-indigo-700 transition">
+                <i class="fa-solid fa-square-poll-vertical w-4 text-center"></i>
+                Quiz
+            </a>
+            <a href="${pageContext.request.contextPath}/discussion"
+               class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition">
+                <i class="fa-solid fa-comments w-4 text-center"></i>
+                Discussion
+            </a>
+        </nav>
+        <div class="px-3 mt-auto">
+            <a href="${pageContext.request.contextPath}/logout"
+               class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition">
+                <i class="fa-solid fa-arrow-right-from-bracket w-4 text-center"></i>
+                Logout
+            </a>
+        </div>
+    </aside>
+
 
 <%--
     Pick up a flash error message stored in session by the servlet
@@ -47,13 +96,13 @@
 <c:set var="flashError" value="${sessionScope.flashError}"/>
 <c:remove var="flashError" scope="session"/>
 
-<main class="ml-56 min-h-screen flex">
+<main class="lg:ml-64 min-h-screen flex flex-col lg:flex-row">
 
     <!-- ── LEFT: Course list ── -->
-    <div class="w-64 flex-shrink-0 bg-white border-r border-gray-100 flex flex-col min-h-screen">
-        <div class="px-5 py-5 border-b border-gray-100">
-            <h1 class="text-base font-semibold text-gray-900">Quizzes</h1>
-            <p class="text-xs text-gray-400 mt-0.5">Create &amp; manage quizzes</p>
+    <div class="w-full lg:w-64 flex-shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-slate-100 flex flex-col lg:min-h-screen">
+        <div class="px-5 py-5 border-b border-slate-100">
+            <h1 class="text-base font-semibold text-slate-900">Quizzes</h1>
+            <p class="text-xs text-slate-400 mt-0.5">Create &amp; manage quizzes</p>
         </div>
         <div class="flex-1 overflow-y-auto py-2">
             <%-- PHP: foreach ($courses as $c) --%>
@@ -62,12 +111,12 @@
                 <a href="${pageContext.request.contextPath}/quiz?course_id=${c.id}"
                    class="flex items-center justify-between px-4 py-3 border-l-2 transition
                           <c:choose>
-                              <c:when test='${active}'>bg-gray-50 border-gray-900</c:when>
-                              <c:otherwise>border-transparent hover:bg-gray-50 hover:border-gray-200</c:otherwise>
+                              <c:when test='${active}'>bg-indigo-50 border-indigo-600</c:when>
+                              <c:otherwise>border-transparent hover:bg-slate-50 hover:border-slate-200</c:otherwise>
                           </c:choose>">
                     <div class="min-w-0 flex-1">
-                        <div class="text-sm font-medium text-gray-900 truncate">${fn:escapeXml(c.title)}</div>
-                        <div class="text-xs text-gray-400 mt-0.5">${c.quizCount} quizzes</div>
+                        <div class="text-sm font-medium text-slate-900 truncate">${fn:escapeXml(c.title)}</div>
+                        <div class="text-xs text-slate-400 mt-0.5">${c.quizCount} quizzes</div>
                     </div>
                 </a>
             </c:forEach>
@@ -91,7 +140,7 @@
                     <c:set var="toastMsg"   value="Quiz updated!"/>
                 </c:when>
                 <c:when test="${urlMsg == 'deleted'}">
-                    <c:set var="toastClass" value="bg-gray-50 border-gray-200 text-gray-600"/>
+                    <c:set var="toastClass" value="bg-slate-50 border-slate-200 text-slate-600"/>
                     <c:set var="toastMsg"   value="Quiz deleted."/>
                 </c:when>
                 <c:when test="${urlMsg == 'question_added'}">
@@ -113,9 +162,9 @@
              PHP: if ($view === 'new')
         ═══════════════════════════════════════════════════════════ -->
         <c:if test="${view == 'new'}">
-            <div class="max-w-xl mx-auto px-8 py-8">
+            <div class="max-w-xl mx-auto px-5 sm:px-8 py-8">
                 <div class="flex items-center gap-3 mb-6">
-                    <a href="${pageContext.request.contextPath}/quiz?course_id=${courseId}" class="text-gray-400 hover:text-gray-700">
+                    <a href="${pageContext.request.contextPath}/quiz?course_id=${courseId}" class="text-slate-400 hover:text-slate-700">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
                         </svg>
@@ -131,13 +180,13 @@
                 </c:if>
 
                 <form method="POST" action="${pageContext.request.contextPath}/quiz?course_id=${courseId}&view=new"
-                      class="bg-white border border-gray-100 rounded-2xl p-6 flex flex-col gap-4">
+                      class="bg-white border border-slate-100 rounded-2xl p-6 flex flex-col gap-4">
                     <input type="hidden" name="action" value="create_quiz"/>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1.5">Course</label>
-                        <select name="course_id" required
-                                class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-gray-400 transition">
+                        <label class="block text-xs font-medium text-slate-700 mb-1.5">Course</label>
+                        <select name="SelectedCourseId" required
+                                class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
                             <c:forEach var="c" items="${courses}">
                                 <option value="${c.id}" <c:if test="${c.id == courseId}">selected</c:if>>
                                     ${fn:escapeXml(c.title)}
@@ -147,40 +196,40 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1.5">
+                        <label class="block text-xs font-medium text-slate-700 mb-1.5">
                             Quiz title <span class="text-red-400">*</span>
                         </label>
                         <input type="text" name="title" required placeholder="e.g. Week 3 — OSI Model Quiz"
-                               class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-gray-400 transition"/>
+                               class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"/>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1.5">
+                        <label class="block text-xs font-medium text-slate-700 mb-1.5">
                             Quiz code <span class="text-red-400">*</span>
-                            <span class="text-gray-400 font-normal ml-1">(6 characters, shared with students)</span>
+                            <span class="text-slate-400 font-normal ml-1">(6 characters, shared with students)</span>
                         </label>
                         <div class="flex gap-2">
                             <%-- generatedCode set by servlet (replaces PHP generate_code()) --%>
                             <input type="text" name="quiz_code" id="quiz-code" required maxlength="6"
                                    placeholder="e.g. ABC123"
                                    value="${generatedCode}"
-                                   class="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm uppercase font-mono
-                                          focus:outline-none focus:border-gray-400 transition tracking-widest"/>
+                                   class="flex-1 border border-slate-200 rounded-xl px-4 py-2.5 text-sm uppercase font-mono
+                                          focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition tracking-widest"/>
                             <button type="button" onclick="regenerateCode()"
-                                    class="px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-100 transition">
+                                    class="px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-100 transition">
                                 🔄 Generate
                             </button>
                         </div>
-                        <p class="text-xs text-gray-400 mt-1.5">Students enter this code to access the quiz.</p>
+                        <p class="text-xs text-slate-400 mt-1.5">Students enter this code to access the quiz.</p>
                     </div>
 
                     <div class="flex gap-3 pt-2">
                         <button type="submit"
-                                class="flex-1 py-2.5 rounded-xl bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 transition">
+                                class="flex-1 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition">
                             Create quiz &amp; add questions
                         </button>
                         <a href="${pageContext.request.contextPath}/quiz?course_id=${courseId}"
-                           class="px-5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-100 transition">
+                           class="px-5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-100 transition">
                             Cancel
                         </a>
                     </div>
@@ -193,9 +242,9 @@
              PHP: elseif ($view === 'edit' && $selected_quiz)
         ═══════════════════════════════════════════════════════════ -->
         <c:if test="${view == 'edit' and not empty selectedQuiz}">
-            <div class="max-w-xl mx-auto px-8 py-8">
+            <div class="max-w-xl mx-auto px-5 sm:px-8 py-8">
                 <div class="flex items-center gap-3 mb-6">
-                    <a href="${pageContext.request.contextPath}/quiz?course_id=${courseId}" class="text-gray-400 hover:text-gray-700">
+                    <a href="${pageContext.request.contextPath}/quiz?course_id=${courseId}" class="text-slate-400 hover:text-slate-700">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
                         </svg>
@@ -211,26 +260,26 @@
 
                 <form method="POST"
                       action="${pageContext.request.contextPath}/quiz?course_id=${courseId}&quiz_id=${quizId}&view=edit"
-                      class="bg-white border border-gray-100 rounded-2xl p-6 flex flex-col gap-4">
+                      class="bg-white border border-slate-100 rounded-2xl p-6 flex flex-col gap-4">
                     <input type="hidden" name="action"    value="edit_quiz"/>
                     <input type="hidden" name="quiz_id"   value="${selectedQuiz.id}"/>
                     <input type="hidden" name="course_id" value="${courseId}"/>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1.5">Quiz title</label>
+                        <label class="block text-xs font-medium text-slate-700 mb-1.5">Quiz title</label>
                         <input type="text" name="title" required value="${fn:escapeXml(selectedQuiz.title)}"
-                               class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-gray-400 transition"/>
+                               class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"/>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1.5">Quiz code</label>
+                        <label class="block text-xs font-medium text-slate-700 mb-1.5">Quiz code</label>
                         <div class="flex gap-2">
                             <input type="text" name="quiz_code" id="quiz-code" required maxlength="6"
                                    value="${fn:escapeXml(selectedQuiz.quizCode)}"
-                                   class="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm uppercase font-mono
-                                          focus:outline-none focus:border-gray-400 transition tracking-widest"/>
+                                   class="flex-1 border border-slate-200 rounded-xl px-4 py-2.5 text-sm uppercase font-mono
+                                          focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition tracking-widest"/>
                             <button type="button" onclick="regenerateCode()"
-                                    class="px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-100 transition">
+                                    class="px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-100 transition">
                                 🔄 New code
                             </button>
                         </div>
@@ -238,11 +287,11 @@
 
                     <div class="flex gap-3 pt-2">
                         <button type="submit"
-                                class="flex-1 py-2.5 rounded-xl bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 transition">
+                                class="flex-1 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition">
                             Save changes
                         </button>
                         <a href="${pageContext.request.contextPath}/quiz?course_id=${courseId}&quiz_id=${quizId}&view=questions"
-                           class="px-5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-100 transition">
+                           class="px-5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-100 transition">
                             Cancel
                         </a>
                     </div>
@@ -255,19 +304,19 @@
              PHP: elseif ($view === 'questions' && $selected_quiz)
         ═══════════════════════════════════════════════════════════ -->
         <c:if test="${view == 'questions' and not empty selectedQuiz}">
-            <div class="p-8">
+            <div class="p-5 sm:p-8">
                 <!-- Header -->
-                <div class="flex items-center justify-between mb-6">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
                     <div class="flex items-center gap-3">
-                        <a href="${pageContext.request.contextPath}/quiz?course_id=${courseId}" class="text-gray-400 hover:text-gray-700">
+                        <a href="${pageContext.request.contextPath}/quiz?course_id=${courseId}" class="text-slate-400 hover:text-slate-700">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
                             </svg>
                         </a>
                         <div>
-                            <h2 class="text-lg font-semibold text-gray-900">${fn:escapeXml(selectedQuiz.title)}</h2>
+                            <h2 class="text-lg font-semibold text-slate-900">${fn:escapeXml(selectedQuiz.title)}</h2>
                             <div class="flex items-center gap-3 mt-0.5">
-                                <span class="text-sm text-gray-400">${fn:length(questions)} questions</span>
+                                <span class="text-sm text-slate-400">${fn:length(questions)} questions</span>
                                 <span class="text-xs font-mono font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg tracking-widest">
                                     ${fn:escapeXml(selectedQuiz.quizCode)}
                                 </span>
@@ -276,38 +325,38 @@
                     </div>
                     <div class="flex gap-2">
                         <a href="${pageContext.request.contextPath}/quiz?course_id=${courseId}&quiz_id=${quizId}&view=results"
-                           class="px-4 py-2 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-100 transition">
+                           class="px-4 py-2 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-100 transition">
                             View results
                         </a>
                         <a href="${pageContext.request.contextPath}/quiz?course_id=${courseId}&quiz_id=${quizId}&view=edit"
-                           class="px-4 py-2 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-100 transition">
+                           class="px-4 py-2 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-100 transition">
                             Edit quiz
                         </a>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
                     <!-- Existing questions list -->
                     <div>
-                        <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Questions</h3>
+                        <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Questions</h3>
 
                         <c:choose>
                             <c:when test="${empty questions}">
-                                <div class="bg-white border border-dashed border-gray-200 rounded-2xl p-10 text-center">
-                                    <p class="text-sm text-gray-400">No questions yet.</p>
-                                    <p class="text-xs text-gray-400 mt-1">Add your first question using the form →</p>
+                                <div class="bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
+                                    <p class="text-sm text-slate-400">No questions yet.</p>
+                                    <p class="text-xs text-slate-400 mt-1">Add your first question using the form →</p>
                                 </div>
                             </c:when>
                             <c:otherwise>
                                 <div class="flex flex-col gap-3">
                                     <%-- PHP: foreach ($questions as $qi => $q) --%>
                                     <c:forEach var="q" items="${questions}" varStatus="status">
-                                        <div class="bg-white border border-gray-100 rounded-xl p-4">
+                                        <div class="bg-white border border-slate-100 rounded-xl p-4">
                                             <div class="flex items-start justify-between gap-2 mb-3">
                                                 <div class="flex items-start gap-2 flex-1 min-w-0">
-                                                    <span class="text-xs font-bold text-gray-400 flex-shrink-0 mt-0.5">Q${status.count}</span>
-                                                    <p class="text-sm font-medium text-gray-900 leading-snug">
+                                                    <span class="text-xs font-bold text-slate-400 flex-shrink-0 mt-0.5">Q${status.count}</span>
+                                                    <p class="text-sm font-medium text-slate-900 leading-snug">
                                                         ${fn:escapeXml(q.questionText)}
                                                     </p>
                                                 </div>
@@ -319,7 +368,7 @@
                                                     <input type="hidden" name="question_id" value="${q.id}"/>
                                                     <input type="hidden" name="quiz_id"     value="${quizId}"/>
                                                     <input type="hidden" name="course_id"   value="${courseId}"/>
-                                                    <button type="submit" class="text-gray-300 hover:text-red-500 transition flex-shrink-0">
+                                                    <button type="submit" class="text-slate-300 hover:text-red-500 transition flex-shrink-0">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                                                   d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -332,7 +381,7 @@
                                             <div class="flex flex-col gap-1.5">
                                                 <c:forEach var="opt" items="${q.options}">
                                                     <div class="flex items-center gap-2 text-xs px-3 py-1.5 rounded-lg
-                                                                ${opt.correct ? 'bg-emerald-50 text-emerald-700 font-medium' : 'bg-gray-50 text-gray-600'}">
+                                                                ${opt.correct ? 'bg-emerald-50 text-emerald-700 font-medium' : 'bg-slate-50 text-slate-600'}">
                                                         <c:choose>
                                                             <c:when test="${opt.correct}">
                                                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -340,7 +389,7 @@
                                                                 </svg>
                                                             </c:when>
                                                             <c:otherwise>
-                                                                <div class="w-3.5 h-3.5 rounded-full border border-gray-300 flex-shrink-0"></div>
+                                                                <div class="w-3.5 h-3.5 rounded-full border border-slate-300 flex-shrink-0"></div>
                                                             </c:otherwise>
                                                         </c:choose>
                                                         ${fn:escapeXml(opt.optionText)}
@@ -350,8 +399,8 @@
 
                                             <div class="flex items-center gap-2 mt-2">
                                                 <%-- PHP: str_replace('_',' ',$q['question_type']) → use model's displayType getter --%>
-                                                <span class="text-[10px] text-gray-400 uppercase">${q.getDisplayType()}</span>
-                                                <span class="text-[10px] text-gray-400">
+                                                <span class="text-[10px] text-slate-400 uppercase">${q.getDisplayType()}</span>
+                                                <span class="text-[10px] text-slate-400">
                                                     · ${q.marks} mark<c:if test="${q.marks != 1}">s</c:if>
                                                 </span>
                                             </div>
@@ -364,22 +413,22 @@
 
                     <!-- Add question form -->
                     <div>
-                        <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Add question</h3>
+                        <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Add question</h3>
                         <form method="POST"
                               action="${pageContext.request.contextPath}/quiz?course_id=${courseId}&quiz_id=${quizId}&view=questions"
-                              class="bg-white border border-gray-100 rounded-2xl p-5 flex flex-col gap-4" id="add-q-form">
+                              class="bg-white border border-slate-100 rounded-2xl p-5 flex flex-col gap-4" id="add-q-form">
                             <input type="hidden" name="action"    value="add_question"/>
                             <input type="hidden" name="quiz_id"   value="${quizId}"/>
                             <input type="hidden" name="course_id" value="${courseId}"/>
 
                             <!-- Question type -->
                             <div>
-                                <label class="block text-xs font-medium text-gray-700 mb-1.5">Type</label>
+                                <label class="block text-xs font-medium text-slate-700 mb-1.5">Type</label>
                                 <div class="flex gap-2">
                                     <label class="flex-1 cursor-pointer">
                                         <input type="radio" name="question_type" value="multiple_choice" class="hidden peer" checked
                                                onchange="setQuestionType('multiple_choice')"/>
-                                        <div class="text-center py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-500
+                                        <div class="text-center py-2 rounded-xl border border-slate-200 text-xs font-medium text-slate-500
                                                     peer-checked:border-indigo-300 peer-checked:bg-indigo-50 peer-checked:text-indigo-700 transition">
                                             Multiple choice
                                         </div>
@@ -387,7 +436,7 @@
                                     <label class="flex-1 cursor-pointer">
                                         <input type="radio" name="question_type" value="true_false" class="hidden peer"
                                                onchange="setQuestionType('true_false')"/>
-                                        <div class="text-center py-2 rounded-xl border border-gray-200 text-xs font-medium text-gray-500
+                                        <div class="text-center py-2 rounded-xl border border-slate-200 text-xs font-medium text-slate-500
                                                     peer-checked:border-indigo-300 peer-checked:bg-indigo-50 peer-checked:text-indigo-700 transition">
                                             True / False
                                         </div>
@@ -397,16 +446,16 @@
 
                             <!-- Question text -->
                             <div>
-                                <label class="block text-xs font-medium text-gray-700 mb-1.5">Question</label>
+                                <label class="block text-xs font-medium text-slate-700 mb-1.5">Question</label>
                                 <textarea name="question_text" rows="3" required
                                           placeholder="Type your question here..."
-                                          class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-gray-400 transition resize-none"></textarea>
+                                          class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition resize-none"></textarea>
                             </div>
 
                             <!-- Options -->
                             <div id="options-wrap">
-                                <label class="block text-xs font-medium text-gray-700 mb-2">
-                                    Options <span class="text-gray-400 font-normal">(tick the correct answer)</span>
+                                <label class="block text-xs font-medium text-slate-700 mb-2">
+                                    Options <span class="text-slate-400 font-normal">(tick the correct answer)</span>
                                 </label>
                                 <%--
                                     PHP rendered 4 option rows with a for loop.
@@ -431,7 +480,7 @@
                                                 </c:choose>
                                             </c:set>
                                             <input type="text" name="options[]" required placeholder="Option ${optLabel}"
-                                                   class="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 transition"/>
+                                                   class="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"/>
                                         </div>
                                     </c:forEach>
                                 </div>
@@ -439,9 +488,9 @@
 
                             <!-- Marks -->
                             <div>
-                                <label class="block text-xs font-medium text-gray-700 mb-1.5">Marks for this question</label>
+                                <label class="block text-xs font-medium text-slate-700 mb-1.5">Marks for this question</label>
                                 <input type="number" name="marks" value="1" min="1" max="10"
-                                       class="w-24 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-gray-400 transition text-center"/>
+                                       class="w-24 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-center"/>
                             </div>
 
                             <button type="submit"
@@ -459,24 +508,24 @@
              PHP: elseif ($view === 'results' && $selected_quiz)
         ═══════════════════════════════════════════════════════════ -->
         <c:if test="${view == 'results' and not empty selectedQuiz}">
-            <div class="p-8">
+            <div class="p-5 sm:p-8">
                 <div class="flex items-center gap-3 mb-6">
                     <a href="${pageContext.request.contextPath}/quiz?course_id=${courseId}&quiz_id=${quizId}&view=questions"
-                       class="text-gray-400 hover:text-gray-700">
+                       class="text-slate-400 hover:text-slate-700">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
                         </svg>
                     </a>
                     <div>
                         <h2 class="text-lg font-semibold">${fn:escapeXml(selectedQuiz.title)} — Results</h2>
-                        <p class="text-sm text-gray-400">${fn:length(results)} attempts</p>
+                        <p class="text-sm text-slate-400">${fn:length(results)} attempts</p>
                     </div>
                 </div>
 
                 <c:choose>
                     <c:when test="${empty results}">
-                        <div class="bg-white border border-gray-100 rounded-2xl p-16 text-center">
-                            <p class="text-sm text-gray-400">
+                        <div class="bg-white border border-slate-100 rounded-2xl p-16 text-center">
+                            <p class="text-sm text-slate-400">
                                 No attempts yet. Share the quiz code
                                 <span class="font-mono font-semibold text-indigo-600">${fn:escapeXml(selectedQuiz.quizCode)}</span>
                                 with your students.
@@ -485,55 +534,55 @@
                     </c:when>
                     <c:otherwise>
                         <!-- Summary stats — computed by servlet into ResultStats bean -->
-                        <div class="grid grid-cols-3 gap-4 mb-6">
-                            <div class="bg-white border border-gray-100 rounded-xl px-5 py-4 text-center">
-                                <div class="text-2xl font-bold text-gray-900">${stats.avgPct}%</div>
-                                <div class="text-xs text-gray-400 mt-1">Average score</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                            <div class="bg-white border border-slate-100 rounded-xl px-5 py-4 text-center">
+                                <div class="text-2xl font-bold text-slate-900">${stats.avgPct}%</div>
+                                <div class="text-xs text-slate-400 mt-1">Average score</div>
                             </div>
                             <div class="bg-emerald-50 border border-emerald-100 rounded-xl px-5 py-4 text-center">
                                 <div class="text-2xl font-bold text-emerald-700">${stats.highPct}%</div>
-                                <div class="text-xs text-gray-400 mt-1">Highest score</div>
+                                <div class="text-xs text-slate-400 mt-1">Highest score</div>
                             </div>
                             <div class="bg-red-50 border border-red-100 rounded-xl px-5 py-4 text-center">
                                 <div class="text-2xl font-bold text-red-600">${stats.lowPct}%</div>
-                                <div class="text-xs text-gray-400 mt-1">Lowest score</div>
+                                <div class="text-xs text-slate-400 mt-1">Lowest score</div>
                             </div>
                         </div>
 
                         <!-- Results table -->
-                        <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden">
+                        <div class="bg-white border border-slate-100 rounded-2xl overflow-x-auto">
                             <table class="w-full text-sm">
                                 <thead>
-                                    <tr class="border-b border-gray-100 bg-gray-50">
-                                        <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500">Student</th>
-                                        <th class="text-center px-4 py-3 text-xs font-semibold text-gray-500">Score</th>
-                                        <th class="text-center px-4 py-3 text-xs font-semibold text-gray-500">Percentage</th>
-                                        <th class="text-center px-4 py-3 text-xs font-semibold text-gray-500">Grade</th>
-                                        <th class="text-right px-5 py-3 text-xs font-semibold text-gray-500">Submitted</th>
+                                    <tr class="border-b border-slate-100 bg-slate-50">
+                                        <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500">Student</th>
+                                        <th class="text-center px-4 py-3 text-xs font-semibold text-slate-500">Score</th>
+                                        <th class="text-center px-4 py-3 text-xs font-semibold text-slate-500">Percentage</th>
+                                        <th class="text-center px-4 py-3 text-xs font-semibold text-slate-500">Grade</th>
+                                        <th class="text-right px-5 py-3 text-xs font-semibold text-slate-500">Submitted</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-50">
+                                <tbody class="divide-y divide-slate-50">
                                     <%-- PHP: foreach ($results as $i => $r) --%>
                                     <c:forEach var="r" items="${results}" varStatus="status">
-                                        <tr class="hover:bg-gray-50 transition">
+                                        <tr class="hover:bg-slate-50 transition">
                                             <td class="px-5 py-3">
                                                 <div class="flex items-center gap-2">
-                                                    <div class="w-7 h-7 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center text-xs font-semibold">
+                                                    <div class="w-7 h-7 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-xs font-semibold">
                                                         <%-- PHP: strtoupper(substr($r['student_name'],0,2)) → model method --%>
                                                         ${r.avatarText}
                                                     </div>
-                                                    <span class="font-medium text-gray-900">${fn:escapeXml(r.studentName)}</span>
+                                                    <span class="font-medium text-slate-900">${fn:escapeXml(r.studentName)}</span>
                                                     <c:if test="${status.first}">
                                                         <span class="text-[10px] text-amber-600">🏆 Top</span>
                                                     </c:if>
                                                 </div>
                                             </td>
-                                            <td class="px-4 py-3 text-center font-semibold text-gray-900">
+                                            <td class="px-4 py-3 text-center font-semibold text-slate-900">
                                                 ${r.score}/${r.totalQuestions}
                                             </td>
                                             <td class="px-4 py-3 text-center">
                                                 <div class="flex items-center justify-center gap-2">
-                                                    <div class="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                                    <div class="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                                                         <%-- PHP: style="width:<?= $pct ?>%" --%>
                                                         <div class="h-full rounded-full ${r.gradeBgClass} opacity-70"
                                                              style="width:${r.percentage}%"></div>
@@ -546,7 +595,7 @@
                                                     ${r.gradeLetter}
                                                 </span>
                                             </td>
-                                            <td class="px-5 py-3 text-right text-xs text-gray-400">
+                                            <td class="px-5 py-3 text-right text-xs text-slate-400">
                                                 <%-- PHP: date('d M Y, g:i A', strtotime($r['submitted_at'])) --%>
                                                ${r.submittedAtFormatted}
                                                 <%--
@@ -570,8 +619,8 @@
              PHP: else (the default view)
         ═══════════════════════════════════════════════════════════ -->
         <c:if test="${view == 'list' or (view != 'new' and view != 'edit' and view != 'questions' and view != 'results')}">
-            <div class="p-8">
-                <div class="flex items-center justify-between mb-6">
+            <div class="p-5 sm:p-8">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
                     <div>
                         <h2 class="text-lg font-semibold">
                             <c:choose>
@@ -579,10 +628,10 @@
                                 <c:otherwise>Quizzes</c:otherwise>
                             </c:choose>
                         </h2>
-                        <p class="text-sm text-gray-400 mt-0.5">${fn:length(quizzes)} quizzes</p>
+                        <p class="text-sm text-slate-400 mt-0.5">${fn:length(quizzes)} quizzes</p>
                     </div>
                     <a href="${pageContext.request.contextPath}/quiz?course_id=${courseId}&view=new"
-                       class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 transition">
+                       class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
@@ -592,12 +641,12 @@
 
                 <c:choose>
                     <c:when test="${empty quizzes}">
-                        <div class="bg-white border border-gray-100 rounded-2xl p-16 text-center">
-                            <svg class="w-10 h-10 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-white border border-slate-100 rounded-2xl p-16 text-center">
+                            <svg class="w-10 h-10 text-slate-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
                                       d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
                             </svg>
-                            <p class="text-sm text-gray-400">No quizzes yet.</p>
+                            <p class="text-sm text-slate-400">No quizzes yet.</p>
                             <a href="${pageContext.request.contextPath}/quiz?course_id=${courseId}&view=new"
                                class="inline-block mt-3 text-sm text-indigo-600 hover:underline">Create your first quiz →</a>
                         </div>
@@ -605,7 +654,7 @@
                     <c:otherwise>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <c:forEach var="q" items="${quizzes}">
-                                <div class="bg-white border border-gray-100 rounded-2xl p-5 hover:border-gray-200 hover:shadow-sm transition">
+                                <div class="bg-white border border-slate-100 rounded-2xl p-5 hover:border-slate-200 hover:shadow-sm transition">
                                     <div class="flex items-start justify-between mb-3">
                                         <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -618,8 +667,8 @@
                                         </span>
                                     </div>
 
-                                    <h3 class="text-sm font-semibold text-gray-900 mb-1">${fn:escapeXml(q.title)}</h3>
-                                    <p class="text-xs text-gray-400 mb-4">
+                                    <h3 class="text-sm font-semibold text-slate-900 mb-1">${fn:escapeXml(q.title)}</h3>
+                                    <p class="text-xs text-slate-400 mb-4">
                                         ${q.questionCount} questions · ${q.attemptCount} attempts
                                         <c:if test="${q.attemptCount > 0}">
                                             · Avg <fmt:formatNumber value="${q.avgScore}" maxFractionDigits="0"/>/${q.questionCount}
@@ -628,11 +677,11 @@
 
                                     <div class="flex gap-2">
                                         <a href="${pageContext.request.contextPath}/quiz?course_id=${courseId}&quiz_id=${q.id}&view=questions"
-                                           class="flex-1 text-center py-2 rounded-xl border border-gray-200 text-xs text-gray-600 hover:bg-gray-100 transition font-medium">
+                                           class="flex-1 text-center py-2 rounded-xl border border-slate-200 text-xs text-slate-600 hover:bg-slate-100 transition font-medium">
                                             Questions
                                         </a>
                                         <a href="${pageContext.request.contextPath}/quiz?course_id=${courseId}&quiz_id=${q.id}&view=results"
-                                           class="flex-1 text-center py-2 rounded-xl border border-gray-200 text-xs text-gray-600 hover:bg-gray-100 transition font-medium">
+                                           class="flex-1 text-center py-2 rounded-xl border border-slate-200 text-xs text-slate-600 hover:bg-slate-100 transition font-medium">
                                             Results
                                         </a>
                                         <form method="POST" action="${pageContext.request.contextPath}/quiz?course_id=${courseId}"
@@ -641,7 +690,7 @@
                                             <input type="hidden" name="quiz_id"   value="${q.id}"/>
                                             <input type="hidden" name="course_id" value="${courseId}"/>
                                             <button type="submit"
-                                                    class="py-2 px-3 rounded-xl border border-gray-200 text-xs text-gray-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition">
+                                                    class="py-2 px-3 rounded-xl border border-slate-200 text-xs text-slate-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition">
                                                 Delete
                                             </button>
                                         </form>
@@ -658,6 +707,14 @@
 </main>
 
 <script>
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebar-overlay');
+const toggle  = document.getElementById('menu-toggle');
+function openSidebar() { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); }
+function closeSidebar() { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
+if (toggle) toggle.addEventListener('click', () => { sidebar.classList.contains('-translate-x-full') ? openSidebar() : closeSidebar(); });
+if (overlay) overlay.addEventListener('click', closeSidebar);
+
 // Auto-dismiss toast after 4 seconds — identical to original PHP page JS
 const toast = document.getElementById('toast');
 if (toast) setTimeout(() => { toast.style.opacity='0'; setTimeout(()=>toast.remove(),300); }, 4000);
@@ -678,19 +735,19 @@ function setQuestionType(type) {
             <div class="flex items-center gap-2">
                 <input type="radio" name="correct" value="0" checked class="w-4 h-4 accent-indigo-600"/>
                 <input type="text" name="options[]" value="True" readonly
-                       class="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-600"/>
+                       class="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm bg-slate-50 text-slate-600"/>
             </div>
             <div class="flex items-center gap-2">
                 <input type="radio" name="correct" value="1" class="w-4 h-4 accent-indigo-600"/>
                 <input type="text" name="options[]" value="False" readonly
-                       class="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-600"/>
+                       class="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm bg-slate-50 text-slate-600"/>
             </div>`;
     } else {
         list.innerHTML = ['A','B','C','D'].map((l,i) => `
             <div class="flex items-center gap-2">
                 <input type="radio" name="correct" value="${i}"  class="w-4 h-4 accent-indigo-600"/>
                 <input type="text" name="options[]" required placeholder="Option ${l}"
-                       class="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 transition"/>
+                       class="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"/>
             </div>`).join('');
     }
 }

@@ -397,6 +397,8 @@ public class QuizServlet extends HttpServlet {
         int    courseId = parseIntParam(req, "course_id", 0);
         String title    = getStringParam(req, "title",     "").trim();
         String code     = getStringParam(req, "quiz_code", "").trim().toUpperCase();
+        String SelectedCourseIdStr = req.getParameter("SelectedCourseId");
+        int SelectedCourseId = Integer.parseInt(SelectedCourseIdStr);
 
         // ── Validate ──
         if (courseId == 0 || title.isEmpty() || code.isEmpty()) {
@@ -415,7 +417,7 @@ public class QuizServlet extends HttpServlet {
             return;
         }
 
-        int newId = quizDAO.createQuiz(courseId, lecturerId, title, code);
+        int newId = quizDAO.createQuiz(SelectedCourseId, lecturerId, title, code);
         resp.sendRedirect(req.getContextPath()
                 + "/quiz?course_id=" + courseId + "&quiz_id=" + newId + "&view=questions&msg=created");
     }
