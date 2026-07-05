@@ -17,7 +17,7 @@
                 <span class="block text-xs text-gray-400 mt-0.5">Lecturer portal</span>
             </div>
             <nav class="flex flex-col gap-0.5 flex-1">
-                <a href="${pageContext.request.contextPath}/dashboard"
+                <a href="${pageContext.request.contextPath}/adashboard"
                    class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Dashboard</a>
                 <a href="${pageContext.request.contextPath}/course"
                    class="px-4 py-2.5 text-sm font-medium bg-gray-50 text-gray-900">My Courses</a>
@@ -62,7 +62,8 @@
                 </div>
                 <div class="flex gap-2">
                     <a href="course?show=all"
-                       class="px-4 py-2.5 text-sm rounded-xl border font-medium transition bg-gray-900 text-white border-gray-900">
+                       class="px-4 py-2.5 text-sm rounded-xl border font-medium transition 
+                            ${show eq 'all' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white border-gray-200 text-gray-500 hover:border-gray-400'}">
                         All courses
                         <span class="ml-1 text-xs opacity-70">
                             (${courses.size()})
@@ -75,7 +76,8 @@
                                 </c:if>
                             </c:forEach>
                     <a href="course?show=teaching" 
-                       class="px-4 py-2.5 text-sm rounded-xl border font-medium transition bg-white border-gray-200 text-gray-500 hover:border-gray-400">
+                       class="px-4 py-2.5 text-sm rounded-xl border font-medium transition 
+                            ${show eq 'teaching' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white border-gray-200 text-gray-500 hover:border-gray-400'}">
                         Teaching
                         <span class="ml-1 text-xs opacity-70 ">(${mine})</span>
                     </a>

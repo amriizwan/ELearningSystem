@@ -77,7 +77,7 @@
                 <!-- ── EDIT NOTE FORM ── -->
                 <div class="max-w-xl mx-auto px-8 py-8">
                     <div class="flex items-center gap-3 mb-6">
-                        <a href="note?course_id=${selectedNote.course_id}" class="text-gray-400 hover:text-gray-700 transition">
+                        <a href="note?course_id=${selectedNote.courseId}" class="text-gray-400 hover:text-gray-700 transition">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
                             </svg>
@@ -88,7 +88,7 @@
                           class="bg-white border border-gray-100 rounded-2xl p-6">
                         <input type="hidden" name="action"    value="edit_note"/>
                         <input type="hidden" name="note_id"   value="${selectedNote.id}"/>
-                        <input type="hidden" name="course_id" value="${selectedNote.course_id}"/>
+                        <input type="hidden" name="course_id" value="${selectedNote.courseId}"/>
                         <div class="mb-5">
                             <label class="block text-xs font-medium text-gray-700 mb-1.5">Title</label>
                             <input type="text" name="title" required value="${selectedNote.title}"
@@ -101,7 +101,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                           d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
                                 </svg>
-                                ${selectedNote.url}
+                                ${selectedNote.fileUrl}
                                 <span class="text-xs text-gray-400 ml-auto uppercase">${selectedNote.type}</span>
                             </div>
                             <p class="text-xs text-gray-400 mt-1.5">File cannot be changed. Delete and re-upload to replace.</p>
@@ -110,7 +110,7 @@
                             <button type="submit" class="flex-1 py-2.5 rounded-xl bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 transition">
                                 Save changes
                             </button>
-                            <a href="note?course_id=${selectedNote.course_id}"
+                            <a href="note?course_id=${selectedNote.courseId}"
                                class="px-5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-100 transition">
                                 Cancel
                             </a>
@@ -248,7 +248,7 @@
                             <p class="text-sm text-gray-400 mt-0.5"> notes</p>
                             
                         </div>
-                        <a href="note?course_id=${param.course_id != null ? firstId : '0'}&new=1"
+                        <a href="note?course_id=${param.course_id != null ? param.course_id : firstId}&new=1"
                            class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 transition">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -277,13 +277,13 @@
                             </button>
 
                             <button type="button"
-                                    class="filter-btn px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm hover:bg-gray-50"
+                                    class="filter-btn px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm"
                                     onclick="filterNotes('pdf', this)">
                                 PDF
                             </button>
 
                             <button type="button"
-                                    class="filter-btn px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm hover:bg-gray-50"
+                                    class="filter-btn px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm"
                                     onclick="filterNotes('video', this)">
                                 Video
                             </button>
@@ -299,7 +299,7 @@
                                       d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                             <p class="text-sm text-gray-400">No notes yet.</p>
-                            <a href="notes.php?course_id=${param.course_id}&new=1"
+                            <a href="note?course_id=${param.course_id}&new=1"
                                class="inline-block mt-3 text-sm text-blue-600 hover:underline">Upload your first note →</a>
                         </div>
                      </c:when>
