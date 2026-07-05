@@ -17,7 +17,7 @@
                 <span class="block text-xs text-gray-400 mt-0.5">Lecturer portal</span>
             </div>
             <nav class="flex flex-col gap-0.5 flex-1">
-                <a href="${pageContext.request.contextPath}/adashboard"
+                <a href="${pageContext.request.contextPath}/dashboard"
                    class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Dashboard</a>
                 <a href="${pageContext.request.contextPath}/course"
                    class="px-4 py-2.5 text-sm font-medium bg-gray-50 text-gray-900">My Courses</a>

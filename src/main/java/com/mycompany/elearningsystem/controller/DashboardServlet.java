@@ -92,14 +92,14 @@ public class DashboardServlet extends HttpServlet {
 
                 case "lecturer":
                     int    lecturerId   = (Integer) session.getAttribute("userId");
-                    String lecturerName = (String)  session.getAttribute("name");
-                    String firstName;
-                    if (lecturerName == null || lecturerName.isEmpty()) {
-                        firstName = "";
-                    }
-                    else{
-                        firstName = lecturerName.split(" ")[0];
-                    }
+//                    String lecturerName = (String)  session.getAttribute("name");
+//                    String firstName;
+//                    if (lecturerName == null || lecturerName.isEmpty()) {
+//                        firstName = "";
+//                    }
+//                    else{
+//                        firstName = lecturerName.split(" ")[0];
+//                    }
 
                     // ── 3. Call DAO methods ──────────────────────────────────────────────
                     DashboardDAO dahboardDAO = new DashboardDAO();
@@ -117,7 +117,7 @@ public class DashboardServlet extends HttpServlet {
 
 
                     // ── 5. Pass data to JSP via request attributes ───────────────────────
-                    req.setAttribute("firstName",           firstName);
+//                    req.setAttribute("firstName",           firstName);
                     req.setAttribute("greeting",            greeting);
                     req.setAttribute("today",               today);
 
