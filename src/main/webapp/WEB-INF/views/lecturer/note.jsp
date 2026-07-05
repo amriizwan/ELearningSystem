@@ -277,13 +277,13 @@
                             </button>
 
                             <button type="button"
-                                    class="filter-btn px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm"
+                                    class="filter-btn px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm hover:bg-gray-50"
                                     onclick="filterNotes('pdf', this)">
                                 PDF
                             </button>
 
                             <button type="button"
-                                    class="filter-btn px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm"
+                                    class="filter-btn px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm hover:bg-gray-50"
                                     onclick="filterNotes('video', this)">
                                 Video
                             </button>

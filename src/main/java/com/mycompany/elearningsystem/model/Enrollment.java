@@ -60,7 +60,4 @@ public class Enrollment {
         this.lectName = lectName;
     }
     
-    public String getInitials() {
-        return lectName.substring(0, Math.min(2, lectName.length())).toUpperCase();
-    }
 }
