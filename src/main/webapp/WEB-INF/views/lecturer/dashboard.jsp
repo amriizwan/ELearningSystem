@@ -100,7 +100,7 @@
 
     <%-- ── Header ── --%>
     <div class="mb-6">
-        <h1 class="text-xl font-semibold text-slate-900">${greeting}, ${firstName}!</h1>
+        <h1 class="text-xl font-semibold text-slate-900">${greeting}, ${sessionScope.userName}  !</h1>
         <p class="text-sm text-slate-400 mt-1">${today}</p>
     </div>
 
