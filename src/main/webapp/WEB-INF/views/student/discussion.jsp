@@ -8,35 +8,87 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>MyStudyZone — Discussion</title>
+        
         <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <style>
+            body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+        </style>
     </head>
     <body class="bg-gray-50 min-h-screen">
-        <div class="flex min-h-screen">
+        <!--<div class="flex min-h-screen">-->
 
-            <aside class="w-52 bg-white border-r border-gray-100 flex flex-col py-5 fixed h-full">
-                <div class="px-4 mb-6">
-                    <span class="text-base font-semibold text-gray-900">MyStudyZone</span>
-                    <span class="block text-xs text-gray-400 mt-0.5">Student portal</span>
+            <!-- Mobile top bar -->
+            <div class="lg:hidden sticky top-0 z-40 flex items-center justify-between bg-white border-b border-slate-200 px-4 py-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+                        <i class="fa-solid fa-graduation-cap text-white text-sm"></i>
+                    </div>
+                    <span class="text-base font-bold text-slate-900">MyStudyZone</span>
                 </div>
-                <nav class="flex flex-col gap-0.5 flex-1">
+                <button id="menu-toggle" type="button" class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Sidebar overlay (mobile) -->
+            <div id="sidebar-overlay" class="hidden fixed inset-0 bg-slate-900/40 z-30 lg:hidden"></div>
+
+            <!-- Sidebar -->
+            <aside id="sidebar" class="w-64 bg-white border-r border-slate-100 flex flex-col py-6 fixed h-full z-40 -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out">
+                <div class="px-6 mb-8 hidden lg:flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm shadow-indigo-200">
+                        <i class="fa-solid fa-graduation-cap text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <span class="block text-base font-bold text-slate-900 leading-tight">MyStudyZone</span>
+                        <span class="block text-xs text-slate-400">Student portal</span>
+                    </div>
+                </div>
+                <nav class="flex flex-col gap-1 flex-1 px-3">
                     <a href="${pageContext.request.contextPath}/dashboard"
-                       class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Dashboard</a>
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition">
+                        <i class="fa-solid fa-gauge-high w-4 text-center"></i>
+                        Dashboard
+                    </a>
                     <a href="${pageContext.request.contextPath}/enrollment"
-                       class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Enroll</a>
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition">
+                        <i class="fa-solid fa-pen-to-square w-4 text-center"></i>
+                        Enroll
+                    </a>
                     <a href="${pageContext.request.contextPath}/course"
-                       class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">My Courses</a>
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition">
+                        <i class="fa-solid fa-book-open w-4 text-center"></i>
+                        My Courses
+                    </a>
                     <a href="${pageContext.request.contextPath}/assignment"
-                       class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Assignments</a>
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition">
+                        <i class="fa-solid fa-file-lines w-4 text-center"></i>
+                        Assignments
+                    </a>
                     <a href="${pageContext.request.contextPath}/quiz"
-                       class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Quiz</a>
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition">
+                        <i class="fa-solid fa-square-poll-vertical w-4 text-center"></i>
+                        Quiz
+                    </a>
                     <a href="${pageContext.request.contextPath}/discussion"
-                       class="px-4 py-2.5 text-sm font-medium bg-gray-50 text-gray-900">Discussion</a>
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold bg-indigo-50 text-indigo-700 transition">
+                        <i class="fa-solid fa-comments w-4 text-center"></i>
+                        Discussion
+                    </a>
                 </nav>
-                <a href="${pageContext.request.contextPath}/logout"
-                   class="px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 mt-auto">Logout</a>
+                <div class="px-3 mt-auto">
+                    <a href="${pageContext.request.contextPath}/logout"
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition">
+                        <i class="fa-solid fa-arrow-right-from-bracket w-4 text-center"></i>
+                        Logout
+                    </a>
+                </div>
             </aside>
 
-            <main class="ml-52 flex-1 flex">
+            <main class="lg:ml-64 min-h-screen flex flex-col lg:flex-row">
 
                 <%-- LEFT PANEL: post list + create form --%>
                 <div class="w-80 border-r border-gray-100 bg-white flex flex-col">
@@ -277,7 +329,7 @@
                     </div>
                 </form>
             </div>
-        </div>
+        <!--</div>-->
 
         <script>
             function toggleCreateForm() {
