@@ -212,6 +212,75 @@
                                 <div class="text-[10px] text-slate-400">Lecturers</div>
                             </div>
                         </div>
+                         <button
+                            type="button"
+                            onclick="openCourseModal(
+                                '${fn:escapeXml(courses.title)}',
+                                `${fn:escapeXml(courses.description)}`,
+                                '${courses.note_count}',
+                                '${courses.asgn_count}',
+                                '${courses.student_count}',
+                                '${courses.lecturer_count}'
+                            )"
+                            class="w-full mb-2 py-2.5 rounded-xl text-sm font-semibold transition bg-slate-100 text-slate-600 hover:bg-red-50 hover:text-red-600 border border-transparent hover:border-red-200">
+                            View details
+                        </button>
+                            
+                        <!-- Course Details Modal -->
+                        <div id="courseModal"
+                             class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+                            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+                                <!-- Header -->
+                                <div class="flex justify-between items-start p-6 border-b">
+                                    <div>
+                                        <h2 id="modalTitle"
+                                            class="text-2xl font-bold text-slate-900"></h2>
+                                    </div>
+                                    <button
+                                        onclick="closeCourseModal()"
+                                        class="w-10 h-10 rounded-full hover:bg-slate-100 text-slate-500">
+                                        ✕
+                                    </button>
+                                </div>
+
+                                <!-- Body -->
+                                <div class="p-6 overflow-y-auto">
+                                    <h4 class="font-semibold text-slate-700 mb-2">
+                                        Course Description
+                                    </h4>
+                                    <p id="modalDescription"
+                                       class="text-slate-600 leading-7 whitespace-pre-line mb-8">
+                                    </p>
+
+                                    <div class="grid grid-cols-4 gap-4">
+                                        <div class="bg-slate-50 rounded-xl p-4 text-center">
+                                            <div id="modalNotes" class="text-2xl font-bold text-slate-900"></div>
+                                            <div class="text-xs text-slate-500 mt-1">Notes</div>
+                                        </div>
+                                        <div class="bg-slate-50 rounded-xl p-4 text-center">
+                                            <div id="modalAssignments" class="text-2xl font-bold text-slate-900"></div>
+                                            <div class="text-xs text-slate-500 mt-1">Assignments</div>
+                                        </div>
+                                        <div class="bg-slate-50 rounded-xl p-4 text-center">
+                                            <div id="modalStudents" class="text-2xl font-bold text-slate-900"></div>
+                                            <div class="text-xs text-slate-500 mt-1">Students</div>
+                                        </div>
+                                        <div class="bg-slate-50 rounded-xl p-4 text-center">
+                                            <div id="modalLecturer" class="text-2xl font-bold text-slate-900"></div>
+                                            <div class="text-xs text-slate-500 mt-1">Lecturers</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="border-t p-4 flex justify-end">
+                                    <button
+                                        onclick="closeCourseModal()"
+                                        class="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- Action button -->
                         <form method="POST" action="${pageContext.request.contextPath}/course">
@@ -267,6 +336,34 @@
 
             });
         }
+        const courseModal = document.getElementById("courseModal");
+
+            function openCourseModal(title,description, notes, assignments,students, lecturer){
+                document.getElementById("modalTitle").textContent = title;
+                document.getElementById("modalLecturer").textContent = lecturer;
+
+                document.getElementById("modalDescription").textContent =
+                    description && description !== "null"
+                        ? description
+                        : "No description available.";
+
+                document.getElementById("modalNotes").textContent = notes;
+                document.getElementById("modalAssignments").textContent = assignments;
+                document.getElementById("modalStudents").textContent = students;
+
+                courseModal.classList.remove("hidden");
+                courseModal.classList.add("flex");
+
+                document.body.classList.add("overflow-hidden");
+            }
+
+            function closeCourseModal(){
+
+                courseModal.classList.remove("flex");
+                courseModal.classList.add("hidden");
+
+                document.body.classList.remove("overflow-hidden");
+            }
         
         const toast = document.getElementById('toast');
         if (toast) setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 4000);
