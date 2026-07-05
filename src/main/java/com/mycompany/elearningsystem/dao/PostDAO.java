@@ -126,6 +126,7 @@ public class PostDAO {
                     post.setCourseName(rs.getString("course_name"));
                     // Load all comments for this post
                     post.setComments(getCommentsByPost(postId));
+                    post.setCommentCount(post.getComments().size());
                     return post;
                 }
             }
