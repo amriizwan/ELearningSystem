@@ -69,7 +69,7 @@ public class SubmissionServlet extends HttpServlet {
             return;
         }
 
-        String uploadPath = getServletContext().getRealPath("/uploads/assignments");
+        String uploadPath = "C:\\Users\\amri1\\OneDrive\\Documents\\NetBeansProjects\\ELearningSystem\\src\\main\\webapp\\uploads\\assignments";
 
         File dir = new File(uploadPath);
             if (!dir.exists()) {

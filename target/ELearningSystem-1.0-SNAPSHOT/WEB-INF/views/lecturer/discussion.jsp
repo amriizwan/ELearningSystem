@@ -7,34 +7,92 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>MyStudyZone — Discussion</title>
         <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <style>
+            body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+        </style>
     </head>
-    <body class="bg-gray-50 min-h-screen">
-        <div class="flex min-h-screen">
+    <body class="bg-slate-50 text-slate-900 antialiased min-h-screen">
 
-            <aside class="w-52 bg-white border-r border-gray-100 flex flex-col py-5 fixed h-full">
-                <div class="px-4 mb-6">
-                    <span class="text-base font-semibold text-gray-900">MyStudyZone</span>
-                    <span class="block text-xs text-gray-400 mt-0.5">Lecturer portal</span>
+        <!-- Mobile top bar -->
+        <div class="lg:hidden sticky top-0 z-40 flex items-center justify-between bg-white border-b border-slate-200 px-4 py-3">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+                    <i class="fa-solid fa-graduation-cap text-white text-sm"></i>
                 </div>
-                <nav class="flex flex-col gap-0.5 flex-1">
-                    <a href="${pageContext.request.contextPath}/dashboard"   class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Dashboard</a>
-                    <a href="${pageContext.request.contextPath}/course"      class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">My Courses</a>
-                    <a href="${pageContext.request.contextPath}/note"        class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Notes</a>
-                    <a href="${pageContext.request.contextPath}/assignment"  class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Assignments</a>
-                    <a href="${pageContext.request.contextPath}/quiz"        class="px-4 py-2.5 text-sm text-gray-500 hover:bg-gray-50">Quiz</a>
-                    <a href="${pageContext.request.contextPath}/discussion"  class="px-4 py-2.5 text-sm font-medium bg-gray-50 text-gray-900">Discussion</a>
-                </nav>
-                <a href="${pageContext.request.contextPath}/logout" class="px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 mt-auto">Logout</a>
-            </aside>
+                <span class="text-base font-bold text-slate-900">MyStudyZone</span>
+            </div>
+            <button id="menu-toggle" type="button" class="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition">
+                <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+        </div>
 
-            <main class="ml-52 flex-1 flex">
+        <!-- Sidebar overlay (mobile) -->
+        <div id="sidebar-overlay" class="hidden fixed inset-0 bg-slate-900/40 z-30 lg:hidden"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-64 bg-white border-r border-slate-100 flex flex-col py-6 fixed h-full z-40 -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out">
+            <div class="px-6 mb-8 hidden lg:flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm shadow-indigo-200">
+                    <i class="fa-solid fa-graduation-cap text-white text-sm"></i>
+                </div>
+                <div>
+                    <span class="block text-base font-bold text-slate-900 leading-tight">MyStudyZone</span>
+                    <span class="block text-xs text-slate-400">Lecturer portal</span>
+                </div>
+            </div>
+            <nav class="flex flex-col gap-1 flex-1 px-3">
+                <a href="${pageContext.request.contextPath}/dashboard"
+                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition">
+                    <i class="fa-solid fa-gauge-high w-4 text-center"></i>
+                    Dashboard
+                </a>
+                <a href="${pageContext.request.contextPath}/course"
+                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition">
+                    <i class="fa-solid fa-book-open w-4 text-center"></i>
+                    My Courses
+                </a>
+                <a href="${pageContext.request.contextPath}/note"
+                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition">
+                    <i class="fa-solid fa-note-sticky w-4 text-center"></i>
+                    Notes
+                </a>
+                <a href="${pageContext.request.contextPath}/assignment"
+                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition">
+                    <i class="fa-solid fa-file-lines w-4 text-center"></i>
+                    Assignments
+                </a>
+                <a href="${pageContext.request.contextPath}/quiz"
+                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition">
+                    <i class="fa-solid fa-square-poll-vertical w-4 text-center"></i>
+                    Quiz
+                </a>
+                <a href="${pageContext.request.contextPath}/discussion"
+                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold bg-indigo-50 text-indigo-700 transition">
+                    <i class="fa-solid fa-comments w-4 text-center"></i>
+                    Discussion
+                </a>
+            </nav>
+            <div class="px-3 mt-auto">
+                <a href="${pageContext.request.contextPath}/logout"
+                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition">
+                    <i class="fa-solid fa-arrow-right-from-bracket w-4 text-center"></i>
+                    Logout
+                </a>
+            </div>
+        </aside>
+
+            <main class="lg:ml-64 min-h-screen flex flex-col lg:flex-row">
 
                 <%-- LEFT PANEL: post list + create form --%>
-                <div class="w-80 border-r border-gray-100 bg-white flex flex-col">
-                    <div class="px-4 py-4 border-b border-gray-100">
-                        <h1 class="text-base font-semibold text-gray-900">Discussion</h1>
+                <div class="w-full lg:w-80 flex-shrink-0 border-b lg:border-b-0 lg:border-r border-slate-100 bg-white flex flex-col">
+                    <div class="px-4 py-4 border-b border-slate-100">
+                        <h1 class="text-base font-bold text-slate-900">Discussion</h1>
                     </div>
 
                     <%-- Success / Error --%>
@@ -52,7 +110,7 @@
                     </c:if>
 
                     <%-- UC012: Create post form --%>
-                    <div class="px-4 py-3 border-b border-gray-100">
+                    <div class="px-4 py-3 border-b border-slate-100">
                         <button onclick="toggleCreateForm()"
                                 class="w-full text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg">
                             + New post
@@ -64,7 +122,7 @@
 
                                 <div class="mb-2">
                                     <select name="courseId" required
-                                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                         <c:forEach var="course" items="${courses}">
                                             <option value="${course.id}">${course.title}</option>
                                         </c:forEach>
@@ -73,13 +131,13 @@
                                 <div class="mb-2">
                                     <input type="text" name="title" required
                                            placeholder="Post title (e.g. Error 404)"
-                                           class="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+                                           class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
                                 </div>
                                 <div class="mb-2">
                                     <%-- UC012 E1: content cannot be empty --%>
                                     <textarea name="content" required rows="3"
                                               placeholder="Please help me solve this error..."
-                                              class="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                                              class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
                                 </div>
                                 <%-- UC012 Step 3: Post button (exact label from SDD) --%>
                                 <button type="submit"
@@ -94,21 +152,21 @@
                     <div class="overflow-auto flex-1">
                         <c:choose>
                             <c:when test="${empty posts}">
-                                <p class="px-4 py-6 text-sm text-gray-400">No posts available</p>
+                                <p class="px-4 py-6 text-sm text-slate-400">No posts available</p>
                             </c:when>
                             <c:otherwise>
                                 <c:forEach var="post" items="${posts}">
                                     <%-- UC010 Step 2: clicking loads post detail on right --%>
                                     <a href="${pageContext.request.contextPath}/discussion?id=${post.id}"
-                                       class="block px-4 py-3 border-b border-gray-50 hover:bg-gray-50
+                                       class="block px-4 py-3 border-b border-slate-50 hover:bg-slate-50
                                               ${param.id == post.id ? 'bg-indigo-50 border-l-2 border-l-indigo-500' : ''}">
                                         <div class="flex items-start justify-between">
-                                            <p class="text-sm font-medium text-gray-900 leading-snug">${post.title}</p>
-                                            <span class="text-xs text-gray-400 ml-2 whitespace-nowrap">
+                                            <p class="text-sm font-medium text-slate-900 leading-snug">${post.title}</p>
+                                            <span class="text-xs text-slate-400 ml-2 whitespace-nowrap">
                                                 ${post.commentCount} reply
                                             </span>
                                         </div>
-                                        <p class="text-xs text-gray-400 mt-0.5">
+                                        <p class="text-xs text-slate-400 mt-0.5">
                                             ${post.authorName} &nbsp;·&nbsp; ${post.courseName}
                                         </p>
                                     </a>
@@ -123,19 +181,19 @@
                     <c:choose>
                         <c:when test="${empty selectedPost}">
                             <div class="flex items-center justify-center h-full">
-                                <p class="text-sm text-gray-400">Select a post to read it</p>
+                                <p class="text-sm text-slate-400">Select a post to read it</p>
                             </div>
                         </c:when>
                         <c:otherwise>
 
                             <%-- Post content --%>
-                            <div class="bg-white rounded-xl border border-gray-100 p-6 mb-5">
+                            <div class="bg-white rounded-xl border border-slate-100 p-6 mb-5">
                                 <div class="flex items-start justify-between mb-3">
                                     <div>
-                                        <h2 class="text-base font-semibold text-gray-900">
+                                        <h2 class="text-base font-semibold text-slate-900">
                                             ${selectedPost.title}
                                         </h2>
-                                        <p class="text-xs text-gray-400 mt-1">
+                                        <p class="text-xs text-slate-400 mt-1">
                                             by ${selectedPost.authorName}
                                             &nbsp;·&nbsp; ${selectedPost.courseName}
                                             &nbsp;·&nbsp; ${selectedPost.createdAt}
@@ -149,7 +207,7 @@
                                                         '${selectedPost.id}',
                                                         '${selectedPost.title}',
                                                         '${selectedPost.content}')"
-                                                    class="text-xs border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-50">
+                                                    class="text-xs border border-slate-200 text-slate-600 px-3 py-1.5 rounded-lg hover:bg-slate-50">
                                                 Edit
                                             </button>
                                             <form action="${pageContext.request.contextPath}/discussion"
@@ -165,30 +223,30 @@
                                         </div>
                                     </c:if>
                                 </div>
-                                <p class="text-sm text-gray-700 leading-relaxed">
+                                <p class="text-sm text-slate-700 leading-relaxed">
                                     ${selectedPost.content}
                                 </p>
                             </div>
 
                             <%-- Comments list --%>
                             <div class="mb-5">
-                                <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+                                <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
                                     ${selectedPost.commentCount} Replies
                                 </h3>
 
                                 <c:choose>
                                     <c:when test="${empty selectedPost.comments}">
-                                        <p class="text-sm text-gray-400">No replies yet. Be the first!</p>
+                                        <p class="text-sm text-slate-400">No replies yet. Be the first!</p>
                                     </c:when>
                                     <c:otherwise>
                                         <c:forEach var="comment" items="${selectedPost.comments}">
-                                            <div class="bg-white rounded-xl border border-gray-100 p-4 mb-2">
+                                            <div class="bg-white rounded-xl border border-slate-100 p-4 mb-2">
                                                 <div class="flex items-start justify-between mb-2">
                                                     <div>
-                                                        <span class="text-xs font-medium text-gray-900">
+                                                        <span class="text-xs font-medium text-slate-900">
                                                             ${comment.authorName}
                                                         </span>
-                                                        <span class="text-xs text-gray-400 ml-2">
+                                                        <span class="text-xs text-slate-400 ml-2">
                                                             ${comment.createdAt}
                                                         </span>
                                                     </div>
@@ -200,13 +258,13 @@
                                                             <input type="hidden" name="commentId" value="${comment.id}"/>
                                                             <input type="hidden" name="postId" value="${selectedPost.id}"/>
                                                             <button type="submit"
-                                                                    class="text-xs text-gray-400 hover:text-red-500">
+                                                                    class="text-xs text-slate-400 hover:text-red-500">
                                                                 ✕
                                                             </button>
                                                         </form>
                                                     </c:if>
                                                 </div>
-                                                <p class="text-sm text-gray-700">${comment.content}</p>
+                                                <p class="text-sm text-slate-700">${comment.content}</p>
                                             </div>
                                         </c:forEach>
                                     </c:otherwise>
@@ -214,8 +272,8 @@
                             </div>
 
                             <%-- Add comment form --%>
-                            <div class="bg-white rounded-xl border border-gray-100 p-5">
-                                <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+                            <div class="bg-white rounded-xl border border-slate-100 p-5">
+                                <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
                                     Add Reply
                                 </h3>
                                 <form action="${pageContext.request.contextPath}/discussion" method="post">
@@ -223,7 +281,7 @@
                                     <input type="hidden" name="postId" value="${selectedPost.id}"/>
                                     <textarea name="content" required rows="2"
                                               placeholder="Write your reply..."
-                                              class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-3"></textarea>
+                                              class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-3"></textarea>
                                     <div class="flex justify-end">
                                         <button type="submit"
                                                 class="text-sm bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">
@@ -238,29 +296,28 @@
                 </div>
 
             </main>
-        </div>
 
         <%-- UC013 Edit post modal --%>
         <div id="editPostModal" class="hidden fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
-            <div class="bg-white rounded-xl border border-gray-100 p-6 w-full max-w-lg">
-                <h2 class="text-sm font-medium text-gray-900 mb-4">Edit Post</h2>
+            <div class="bg-white rounded-xl border border-slate-100 p-6 w-full max-w-lg">
+                <h2 class="text-sm font-medium text-slate-900 mb-4">Edit Post</h2>
                 <form action="${pageContext.request.contextPath}/discussion" method="post">
                     <input type="hidden" name="action" value="edit"/>
                     <input type="hidden" name="postId" id="editPostId"/>
                     <div class="mb-3">
-                        <label class="block text-xs font-medium text-gray-600 mb-1">Title</label>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Title</label>
                         <input type="text" name="title" id="editPostTitle" required
-                               class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+                               class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
                     </div>
                     <div class="mb-5">
-                        <label class="block text-xs font-medium text-gray-600 mb-1">Content</label>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Content</label>
                         <textarea name="content" id="editPostContent" required rows="4"
-                                  class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                                  class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
                     </div>
                     <%-- UC013 Step 3: Save button (exact label from SDD) --%>
                     <div class="flex gap-2 justify-end">
                         <button type="button" onclick="hideEditPost()"
-                                class="text-sm border border-gray-200 text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-50">
+                                class="text-sm border border-slate-200 text-slate-600 px-4 py-2 rounded-lg hover:bg-slate-50">
                             Cancel
                         </button>
                         <button type="submit"
@@ -273,6 +330,14 @@
         </div>
 
         <script>
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const toggle  = document.getElementById('menu-toggle');
+            function openSidebar() { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); }
+            function closeSidebar() { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
+            if (toggle) toggle.addEventListener('click', () => { sidebar.classList.contains('-translate-x-full') ? openSidebar() : closeSidebar(); });
+            if (overlay) overlay.addEventListener('click', closeSidebar);
+
             function toggleCreateForm() {
                 const f = document.getElementById('createForm');
                 f.classList.toggle('hidden');

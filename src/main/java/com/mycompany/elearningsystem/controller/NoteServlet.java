@@ -110,7 +110,7 @@ public class NoteServlet extends HttpServlet {
                 
                 String contentType = filePart.getContentType();
                 
-                String uploadPath = getServletContext().getRealPath("/uploads/notes");
+                String uploadPath = "C:\\Users\\amri1\\OneDrive\\Documents\\NetBeansProjects\\ELearningSystem\\src\\main\\webapp\\uploads\\notes";
                 
                 File dir = new File(uploadPath);
                 if (!dir.exists()) {

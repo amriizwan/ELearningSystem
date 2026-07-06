@@ -333,7 +333,7 @@
                                                 </div>
 
                                                 <!-- Download/open button -->
-                                                <a href="${note.fileUrl}" target="_blank"
+                                                <a href="${pageContext.request.contextPath}/${note.fileUrl}" target="_blank"
                                                    class="opacity-100 sm:opacity-0 group-hover:opacity-100 transition flex items-center gap-1.5 text-xs
                                                           text-slate-500 hover:text-slate-900 border border-slate-200 px-3 py-1.5 rounded-lg flex-shrink-0">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

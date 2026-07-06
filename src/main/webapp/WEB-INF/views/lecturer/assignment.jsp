@@ -335,7 +335,7 @@
                                                                                                 var="submitted_date"/>></p>
 
                                 <c:if test="${forMark.fileUrl != null}">
-                                <a href="${pageContext.request.contextPath}/upload/${forMark.fileUrl}" target="_blank"
+                                <a href="${pageContext.request.contextPath}/${forMark.fileUrl}" target="_blank"
                                    class="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 text-sm text-blue-600 hover:bg-blue-100 transition mb-3">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"

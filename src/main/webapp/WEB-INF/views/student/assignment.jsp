@@ -293,12 +293,12 @@
                                             <span class="text-4xl font-bold text-violet-700">${selectedAsgn.submission.mark}</span>
                                             <span class="text-lg text-violet-400">/ ${selectedAsgn.maxMarks}</span>
                                             <span class="ml-auto text-sm font-semibold text-violet-600">
-                                                <fmt:formatNumber value="${selectedAsgn.mark * 100.0 / selectedAsgn.maxMarks}" maxFractionDigits="0"/>%
+                                                <fmt:formatNumber value="${selectedAsgn.submission.mark * 100.0 / selectedAsgn.maxMarks}" maxFractionDigits="0"/>%
                                             </span>
                                         </div>
-                                        <c:if test="${not empty selectedAsgn.lecturerComment}">
+                                        <c:if test="${not empty selectedAsgn.submission.lecturerComment}">
                                             <div class="bg-white border border-violet-100 rounded-lg px-4 py-3 text-sm text-slate-600 leading-relaxed italic">
-                                                "${selectedAsgn.lecturerComment}"
+                                                "${selectedAsgn.submission.lecturerComment}"
                                             </div>
                                             <p class="text-xs text-violet-400 mt-2">— ${selectedAsgn.lecturerName}</p>
                                         </c:if>
@@ -327,7 +327,7 @@
                                                 </svg>
                                             </div>
                                             <div class="flex-1 text-sm text-slate-600">Submitted file attached</div>
-                                            <a href="${pageContext.request.contextPath}/uploads/${selectedAsgn.submission.filePath}" target="_blank"
+                                            <a href="${pageContext.request.contextPath}/${selectedAsgn.submission.filePath}" target="_blank"
                                                class="text-xs font-medium text-blue-600 hover:underline flex-shrink-0">View file</a>
                                         </div>
                                     </c:if>
