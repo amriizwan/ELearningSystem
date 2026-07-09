@@ -389,7 +389,7 @@ public class QuizDAO {
                 result = new QuizAttempt();
 
                 result.setScore(rs.getInt("score"));
-                result.setSubmittedAt(rs.getTimestamp("submittedAt"));
+                result.setSubmittedAt(rs.getTimestamp("submitted_at"));
                 result.setQuizTitle(rs.getString("title"));
                 result.setCourseTitle(rs.getString("course_title"));
                 result.setLectName(rs.getString("lecturer_name"));
@@ -430,7 +430,7 @@ public class QuizDAO {
             while(rs.next()) {
                 QuizAnswer answer = new QuizAnswer();
 
-                answer.setQuestionText(rs.getString("queston_text"));
+                answer.setQuestionText(rs.getString("question_text"));
                 answer.setSelectedOption(rs.getString("selected_option"));
                 answer.setSelectedCorrect(rs.getBoolean("selected_correct"));
                 answer.setCorrectOption(rs.getString("correct_option"));

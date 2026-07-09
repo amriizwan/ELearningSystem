@@ -19,6 +19,9 @@ public class Quiz {
     private Timestamp createdAt;
     
     private int attemptCount;
+    
+    private String courseTitle;
+    private int questionCount;
 
     public int getAttemptCount() {
         return attemptCount;
@@ -74,8 +77,7 @@ public class Quiz {
     public int getQuestionCount() {
         return questionCount;
     }
-    private String courseTitle;
-    private int questionCount;
+
     
     public Quiz() {}
 

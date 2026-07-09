@@ -6,6 +6,7 @@
 
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.util.*" %>
 <%@page import="com.mycompany.elearningsystem.model.Course"%>
@@ -157,7 +158,7 @@
                                                         <span class="ml-auto text-sm font-semibold text-violet-600">
                                                             <c:choose>
                                                                 <c:when test="${quiz.questionCount > 0}">
-                                                                    <fmt:formatNumber value="${quiz.quizAttempt.score / quiz.questionCount * 100.0}" maxFractionDigits="0" />%
+                                                                    <fmt:formatNumber value="${quiz.quizAttempt.score / quiz.questionCount * 100.0}" maxFractionDigits="2" />%
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     0%
@@ -374,7 +375,7 @@
                     <c:set var="score" value="${resultData.score}" />
                     <c:set var="totalQ" value="${resultData.totalQuestions}" />
                     <c:set var="pct" value="${totalQ > 0 ? (score * 100 / totalQ) : 0}" />
-                    <fmt:formatNumber var="pct" value="${pct}" maxFractionDigits="0"/>
+                    
                     <c:set var="wrong" value="${totalQ - score}" />
 
                     <c:choose>
@@ -462,7 +463,7 @@
 
                                 <div class="${gradeBg} rounded-xl px-4 py-3">
                                     <div class="text-2xl font-bold ${gradeText}">
-                                        ${pct}%
+                                        <fmt:formatNumber value="${pct}" maxFractionDigits="0"/>%
                                     </div>
                                     <div class="text-xs text-slate-400 mt-0.5">
                                         Score
