@@ -32,7 +32,7 @@ public class SessionFilter implements Filter {
         String path = req.getRequestURI().substring(req.getContextPath().length());
 
         // Public paths - no auth required
-        if (path.startsWith("/login") || path.startsWith("/register")
+        if (path.startsWith("/login") || path.startsWith("/register") || path.startsWith("/resetPassword")
                 || path.startsWith("/css") || path.startsWith("/js") || path.startsWith("/assets")
                 || path.equals("/")) {
             chain.doFilter(request, response);

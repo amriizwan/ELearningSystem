@@ -158,7 +158,59 @@ public class UserDAO {
         return u;
     }
     
+    public boolean resetPassword(String email, String name, String password){
+
+        String sql =
+            "UPDATE users "
+            + "SET password=? "
+            + "WHERE LOWER(email)=LOWER(?) "
+            + "AND LOWER(name)=LOWER(?)";
+
+
+        try(Connection conn = DBConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql))
+        {
+            String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
+            ps.setString(1, hashed);
+            ps.setString(2, email);
+            ps.setString(3, name);
+
+            int result = ps.executeUpdate();
+            return result > 0;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
     
-    
+    public boolean isValidUserForReset(String email, String name) {
+
+        String sql =
+            "SELECT role FROM users "
+            + "WHERE LOWER(email)=LOWER(?) "
+            + "AND LOWER(name)=LOWER(?)";
+
+
+        try(Connection conn = DBConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, email);
+            ps.setString(2, name);
+
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                String role = rs.getString("role");
+                // Prevent admin password reset
+                if(role.equalsIgnoreCase("ADMIN")) {
+                    return false;
+                }
+                return true;
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
 

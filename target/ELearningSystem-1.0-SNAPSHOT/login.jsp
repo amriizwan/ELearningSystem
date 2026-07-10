@@ -68,6 +68,13 @@
                     Sign in
                 </button>
             </form>
+            <div class="flex justify-end text-sm">
+                <a href="${pageContext.request.contextPath}/resetPassword"
+                    class="text-indigo-600 hover:underline font-medium">
+                    Forgot Password?
+                </a>
+            </div>
+                
         </div>
 
         <p class="text-center text-sm text-gray-500 mt-4">
@@ -75,7 +82,7 @@
             <a href="${pageContext.request.contextPath}/register"
                class="text-indigo-600 hover:underline font-medium">Create one</a>
         </p>
-
+            
     </div>
 
     <script>
