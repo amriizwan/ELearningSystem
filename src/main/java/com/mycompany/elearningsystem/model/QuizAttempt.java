@@ -23,6 +23,9 @@ public class QuizAttempt {
     private String studentName;
     
     private String courseTitle;
+    
+    private String lectName;
+    private int totalQuestions;
 
     public String getCourseTitle() {
         return courseTitle;
@@ -47,8 +50,6 @@ public class QuizAttempt {
     public void setTotalQuestions(int totalQuestions) {
         this.totalQuestions = totalQuestions;
     }
-    private String lectName;
-    private int totalQuestions;
 
     public QuizAttempt() {}
 

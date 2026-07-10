@@ -63,6 +63,10 @@
                         <p class="text-xs text-gray-400 mb-1">Inactive users</p>
                         <p class="text-2xl font-semibold text-gray-900">${stats.inactiveUsers}</p>
                     </div>
+                    <div class="bg-white rounded-xl border border-gray-100 p-4">
+                        <p class="text-xs text-gray-400 mb-1">Total Revenue</p>
+                        <p class="text-2xl font-semibold text-gray-900">RM ${totalRevenue}</p>
+                    </div>
                 </div>
 
                 <!--TOP 5-->

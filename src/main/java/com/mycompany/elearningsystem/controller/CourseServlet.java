@@ -155,47 +155,55 @@ public class CourseServlet extends HttpServlet {
         int userId = (int) session.getAttribute("userId");
         String action = req.getParameter("action");
         int courseId = Integer.parseInt(req.getParameter("courseId"));
-
+        String role = (String) session.getAttribute("role");
         String submit = req.getParameter("submit");
-        if(submit.equals("buttonCourse")){
-            int lecturerId = (Integer) session.getAttribute("userId");
-         
-            if(action.equals("uassign")){
-                Boolean courseUnassign = courseDAO.CoursesUnassign(lecturerId , courseId);
-                session.setAttribute("success", "Course removed from your teaching list.");
-            }else if(action.equals("assign")){
-                 Boolean courseAssign = courseDAO.CoursesAssign(lecturerId , courseId);
-                 session.setAttribute("success", "Course added to your teaching list!.");
-            }
-        }
         
-        try {
-            switch (action) {
-                case "create":
-                    String newTitle = req.getParameter("title");
-                    String newDesc = req.getParameter("description");
-                    if (newTitle == null || newTitle.trim().isEmpty()) {
-                        session.setAttribute("error", "Course title cannot be empty");
-                    } else {
-                        courseDAO.createCourse(newTitle.trim(), newDesc);
-                        session.setAttribute("success", "Course created successfully");
+        //role
+        switch (role) {
+            case "lecturer":
+                if(submit.equals("buttonCourse")){
+                    int lecturerId = (Integer) session.getAttribute("userId");
+
+                    if(action.equals("uassign")){
+                        Boolean courseUnassign = courseDAO.CoursesUnassign(lecturerId , courseId);
+                        session.setAttribute("success", "Course removed from your teaching list.");
+                    }else if(action.equals("assign")){
+                         Boolean courseAssign = courseDAO.CoursesAssign(lecturerId , courseId);
+                         session.setAttribute("success", "Course added to your teaching list!.");
                     }
-                    break;
+                }
+                break;
+            case "admin":
+                try {
+                    switch (action) {
+                        case "create":
+                            String newTitle = req.getParameter("title");
+                            String newDesc = req.getParameter("description");
+                            if (newTitle == null || newTitle.trim().isEmpty()) {
+                                session.setAttribute("error", "Course title cannot be empty");
+                            } else {
+                                courseDAO.createCourse(newTitle.trim(), newDesc);
+                                session.setAttribute("success", "Course created successfully");
+                            }
+                            break;
 
-                case "update":
-                    courseDAO.updateCourse(courseId, req.getParameter("title"), req.getParameter("description"));
-                    session.setAttribute("success", "Course updated successfully");
-                    break;
+                        case "update":
+                            courseDAO.updateCourse(courseId, req.getParameter("title"), req.getParameter("description"));
+                            session.setAttribute("success", "Course updated successfully");
+                            break;
 
-                case "delete":
-                    courseDAO.deleteCourse(courseId);
-                    session.setAttribute("success", "Course deleted successfully");
-                    break;
-            }
-        } catch (SQLException e) {
-            throw new ServletException("Database error processing course action", e);
-        }
-
+                        case "delete":
+                            courseDAO.deleteCourse(courseId);
+                            session.setAttribute("success", "Course deleted successfully");
+                            break;
+                    }
+                } catch (SQLException e) {
+                    throw new ServletException("Database error processing course action", e);
+                }
+                break;
+            default:
+                break;
+        }   
         resp.sendRedirect(req.getContextPath() + "/course");
     }
 }

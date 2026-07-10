@@ -3,6 +3,7 @@ package com.mycompany.elearningsystem.controller;
 import com.mycompany.elearningsystem.dao.CourseDAO;
 import com.mycompany.elearningsystem.model.Post;
 import com.mycompany.elearningsystem.dao.PostDAO;
+import com.mycompany.elearningsystem.dao.SubscriptionDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,6 +19,7 @@ public class DiscussionServlet extends HttpServlet {
 
     private final PostDAO postDAO = new PostDAO();
     private final CourseDAO courseDAO = new CourseDAO();
+    private final SubscriptionDAO subsDAO = new SubscriptionDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -45,6 +47,19 @@ public class DiscussionServlet extends HttpServlet {
 
             req.setAttribute("posts", posts);
 
+            // check limit post
+            boolean hasReachLimit = false;
+            if (!subsDAO.isSubscribe(userId)) {
+                hasReachLimit = subsDAO.isPostsLimit(userId);
+            }
+            req.setAttribute("hasReachLimit", hasReachLimit);
+            if(role.equals("lecturer")) {
+                req.setAttribute("price", "14.99");
+            }else {
+                req.setAttribute("price", "9.99");
+            }
+            
+            
             // Pass courses for the create post form
             if ("student".equals(role)) {
                 req.setAttribute("courses", courseDAO.getEnrolledCourses(userId));

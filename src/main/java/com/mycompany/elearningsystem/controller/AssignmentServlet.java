@@ -5,6 +5,7 @@ import com.mycompany.elearningsystem.dao.AssignmentDAO;
 import com.mycompany.elearningsystem.model.AssignmentSubmission;
 import com.mycompany.elearningsystem.model.Course;
 import com.mycompany.elearningsystem.dao.CourseDAO;
+import com.mycompany.elearningsystem.dao.SubscriptionDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -25,6 +26,7 @@ public class AssignmentServlet extends HttpServlet {
 
     private final AssignmentDAO assignmentDAO = new AssignmentDAO();
     private final CourseDAO courseDAO = new CourseDAO();
+    private final SubscriptionDAO subsDAO = new SubscriptionDAO();
 
     // ---------------------------------------------------------------
     // GET — display assignment pages
@@ -117,6 +119,14 @@ public class AssignmentServlet extends HttpServlet {
                 List<Assignment> listAssignment = assignmentDAO.getAssignment(course_id, lecture_id);
                 req.setAttribute("listAssignment", listAssignment);
             }
+            
+            //check if assignment upload has reached limit and a subscriber 
+            boolean hasReachLimit = false;
+            if (!subsDAO.isSubscribe(userId)) {
+                hasReachLimit = subsDAO.isAssignmentsLimit(userId);
+            }
+            req.setAttribute("hasReachLimit", hasReachLimit);
+            req.setAttribute("price", "14.99");
             
             String view = req.getParameter("view");
             String asgn_idStr = req.getParameter("asgn_id");

@@ -2,6 +2,7 @@ package com.mycompany.elearningsystem.controller;
 
 import com.mycompany.elearningsystem.dao.DashboardDAO;
 import com.mycompany.elearningsystem.dao.EnrollmentDAO;
+import com.mycompany.elearningsystem.dao.SubscriptionDAO;
 import com.mycompany.elearningsystem.model.AssignmentSubmission;
 import com.mycompany.elearningsystem.model.Course;
 import com.mycompany.elearningsystem.model.QuizAttemptResult;
@@ -26,6 +27,7 @@ public class DashboardServlet extends HttpServlet {
 
     private final DashboardDAO dashboardDAO = new DashboardDAO();
     private final EnrollmentDAO enrollmentDAO = new EnrollmentDAO();
+    private final SubscriptionDAO subsDAO = new SubscriptionDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -113,6 +115,8 @@ public class DashboardServlet extends HttpServlet {
                     ArrayList<Course>     courses             = dahboardDAO.getCourses(lecturerId);
                     ArrayList<AssignmentSubmission> pending_submissions  = dahboardDAO.getPendingSubmissions(lecturerId);
                     ArrayList<QuizAttemptResult> recent_attempts     = dahboardDAO.getRecentAttempts(lecturerId);
+                    
+                    double totalRevenue = subsDAO.getTotalRevenue();
 //                    ArrayList<ForumPost>  recent_posts         = dahboardDAO.getRecentPosts(lecturerId);
 
 
@@ -132,6 +136,7 @@ public class DashboardServlet extends HttpServlet {
                     req.setAttribute("recent_attempts",     recent_attempts);
 //                    req.setAttribute("recent_posts",        recent_posts);
 
+                    req.setAttribute("totalRevenue",        totalRevenue);
                     // ── 6. Forward to JSP ────────────────────────────────────────────────
                     req.getRequestDispatcher("/WEB-INF/views/lecturer/dashboard.jsp").forward(req, resp);
 
@@ -141,7 +146,12 @@ public class DashboardServlet extends HttpServlet {
                     req.setAttribute("topCourses", dashboardDAO.getTopCourses());
                     req.setAttribute("recentUsers", dashboardDAO.getRecentUsers());
                     req.setAttribute("recentPosts", dashboardDAO.getRecentPosts());
+                    
+                    // Display total revenue                    
+                    req.setAttribute("totalRevenue", subsDAO.getTotalRevenue());
                     req.getRequestDispatcher("/WEB-INF/views/admin/dashboard.jsp").forward(req, resp);
+                    
+                    
                     break;
 
                 default:

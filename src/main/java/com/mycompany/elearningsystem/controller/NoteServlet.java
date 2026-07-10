@@ -4,6 +4,7 @@ import com.mycompany.elearningsystem.model.Course;
 import com.mycompany.elearningsystem.dao.CourseDAO;
 import com.mycompany.elearningsystem.model.Note;
 import com.mycompany.elearningsystem.dao.NoteDAO;
+import com.mycompany.elearningsystem.dao.SubscriptionDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -32,6 +33,7 @@ import java.util.UUID;
 public class NoteServlet extends HttpServlet {
     private final NoteDAO noteDAO = new NoteDAO();
     private final CourseDAO courseDAO = new CourseDAO();
+    private final SubscriptionDAO subsDAO = new SubscriptionDAO();
 
     // ---------------------------------------------------------------
     // GET — display notes page
@@ -59,6 +61,13 @@ public class NoteServlet extends HttpServlet {
                 List<Note> listNote = new ArrayList();
                 req.setAttribute("listNote", listNote); // or another default
             }
+            
+            boolean hasReachLimit = false;
+            if (!subsDAO.isSubscribe(userId)) {
+                hasReachLimit = subsDAO.isNotesLimit(userId);
+                req.setAttribute("hasReachLimit", hasReachLimit);
+            }
+            req.setAttribute("hasReachLimit", hasReachLimit);
             
             String editFilter = req.getParameter("edit");
             if(editFilter != null){
@@ -110,7 +119,7 @@ public class NoteServlet extends HttpServlet {
                 
                 String contentType = filePart.getContentType();
                 
-                String uploadPath = "C:\\Users\\amri1\\OneDrive\\Documents\\NetBeansProjects\\ELearningSystem\\src\\main\\webapp\\uploads\\notes";
+                String uploadPath = "C:\\Users\\User\\OneDrive\\Documents\\NetBeansProjects\\ELearningSystem\\src\\main\\webapp\\uploads\\notes";
                 
                 File dir = new File(uploadPath);
                 if (!dir.exists()) {

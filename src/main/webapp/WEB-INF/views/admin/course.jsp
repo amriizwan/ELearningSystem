@@ -66,7 +66,7 @@
                             <input type="text" name="description" placeholder="Brief description..."
                                    class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
                         </div>
-                        <button type="submit"
+                        <button type="submit" 
                                 class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-4 py-2 rounded-lg transition-colors whitespace-nowrap">
                             Create course
                         </button>

@@ -111,10 +111,114 @@
 
                     <%-- UC012: Create post form --%>
                     <div class="px-4 py-3 border-b border-slate-100">
-                        <button onclick="toggleCreateForm()"
-                                class="w-full text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg">
-                            + New post
-                        </button>
+                        <c:choose>
+                            <c:when test="${hasReachLimit}">
+                                <button
+                                    type="button"
+                                    onclick="openCourseModal()"
+                                    class="flex justify-self-center items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 text-white text-sm font-medium">
+                                    Upgrade Plan
+                                </button>
+
+                                <!-- Course Details Modal -->
+                                <div id="courseModal"
+                                    class="fixed inset-0 hidden items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-5">
+                                    <div class="bg-white rounded-3xl overflow-hidden max-w-lg w-full shadow-2xl animate-[fadeIn_.25s_ease]">
+                                        <!-- Header -->
+                                        <div class="bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 text-white p-8 relative">
+                                            <div class="absolute top-4 right-4">
+                                                <button onclick="closeCourseModal()"
+                                                        class="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 transition">
+                                                    ✕
+                                                </button>
+                                            </div>
+                                            <div class="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center mb-4">
+                                                <i class="fa-solid fa-crown text-3xl text-yellow-300"></i>
+                                            </div>
+
+                                            <h2 class="text-3xl font-extrabold">
+                                                Discussion Post Limit Reached
+                                            </h2>
+                                            <p class="text-indigo-100 mt-2 leading-relaxed">
+                                                You've reached the maximum number of discussion posts allowed on the Free plan.
+                                                Upgrade to Premium to participate in unlimited discussions and collaborate with your classmates.
+                                            </p>
+                                        </div>
+                                        <!-- Body -->
+                                        <div class="p-8">
+                                            <div class="bg-indigo-50 rounded-2xl p-5 border border-indigo-100">
+                                                <div class="flex items-center gap-3 mb-4">
+                                                    <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center">
+                                                        <i class="fa-solid fa-gem"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h3 class="font-bold text-lg">
+                                                            Premium Lifetime
+                                                        </h3>
+                                                        <p class="text-sm text-slate-500">
+                                                            One payment. Lifetime access.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="space-y-3">
+                                                    <div class="flex items-center gap-3">
+                                                        <i class="fa-solid fa-circle-check text-green-500"></i>
+                                                        Unlimited Assignment Uploads
+                                                    </div>
+                                                    <div class="flex items-center gap-3">
+                                                        <i class="fa-solid fa-circle-check text-green-500"></i>
+                                                        Unlimited Notes Uploads
+                                                    </div>
+                                                    <div class="flex items-center gap-3">
+                                                        <i class="fa-solid fa-circle-check text-green-500"></i>
+                                                        Unlimited Discussion Posts
+                                                    </div>
+                                                    <div class="flex items-center gap-3">
+                                                        <i class="fa-solid fa-circle-check text-green-500"></i>
+                                                        Instant Premium Activation
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mt-8 text-center">
+                                                <p class="text-slate-500 text-sm">
+                                                    Lifetime Price
+                                                </p>
+                                                <div class="text-5xl font-black text-indigo-600">
+                                                    RM${price}
+                                                </div>
+                                                <p class="text-sm text-green-600 font-semibold mt-2">
+                                                    Pay once • No monthly fees
+                                                </p>
+                                            </div>
+
+                                            <div class="mt-8 flex gap-3 justify-between">
+                                                 <button type="button" onclick="closeCourseModal()"
+                                                         class="flex-1 py-3 rounded-xl border font-semibold hover:bg-slate-100">
+                                                     Maybe Later
+                                                </button>
+
+                                                <form id="upgradeNow" action="subscribe" method="get" class="flex flex-1">
+                                                    <input type="hidden" name="amount" value="${price}">
+                                                    <input type="hidden" name="prevPage" value="assignment">
+
+                                                    <button type="submit" onclick="document.getElementById('upgradeNow').submit()"
+                                                        class="flex-1 text-center py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold hover:scale-105 transition">
+                                                        Upgrade Now →
+                                                    </button>
+                                                </form>
+                                            </div>
+                                       </div>
+                                   </div>
+                               </div>
+                            </c:when>
+
+                            <c:otherwise>
+                                <button onclick="toggleCreateForm()"
+                                        class="w-full text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg">
+                                    + New post
+                                </button>
+                            </c:otherwise>
+                        </c:choose>
 
                         <div id="createForm" class="hidden mt-3">
                             <form action="${pageContext.request.contextPath}/discussion" method="post">
@@ -350,6 +454,21 @@
             }
             function hideEditPost() {
                 document.getElementById('editPostModal').classList.add('hidden');
+            }
+            const courseModal = document.getElementById("courseModal");
+
+            function openCourseModal(title, lecturer, description, notes, assignments, quizzes, students){
+                courseModal.classList.remove("hidden");
+                courseModal.classList.add("flex");
+
+                document.body.classList.add("overflow-hidden");
+            }
+
+            function closeCourseModal(){
+                courseModal.classList.remove("flex");
+                courseModal.classList.add("hidden");
+
+                document.body.classList.remove("overflow-hidden");
             }
         </script>
     </body>

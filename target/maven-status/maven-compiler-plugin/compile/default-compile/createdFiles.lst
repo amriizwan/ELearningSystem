@@ -6,9 +6,12 @@ com\mycompany\elearningsystem\dao\UserDAO.class
 com\mycompany\elearningsystem\util\DateUtil.class
 com\mycompany\elearningsystem\controller\AssignmentServlet.class
 com\mycompany\elearningsystem\controller\NoteServlet.class
+com\mycompany\elearningsystem\controller\SubscriptionServlet.class
 com\mycompany\elearningsystem\model\Course.class
 com\mycompany\elearningsystem\dao\QuizDAO.class
 com\mycompany\elearningsystem\controller\DashboardServlet.class
+com\mycompany\elearningsystem\dao\SubscriptionDAO.class
+com\mycompany\elearningsystem\model\Subscription.class
 com\mycompany\elearningsystem\controller\RegisterServlet.class
 com\mycompany\elearningsystem\controller\LogoutServlet.class
 com\mycompany\elearningsystem\model\CourseLecturer.class
