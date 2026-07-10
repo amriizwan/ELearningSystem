@@ -53,61 +53,66 @@ public class SubmissionServlet extends HttpServlet {
         }
 
         Part part = request.getPart("submission_file");
-        String contentType = part.getContentType();
-        if (part == null || part.getSize() == 0) {
-//            session.setAttribute("error", "Please select a file to upload");
-//            response.sendRedirect(request.getContextPath() +
-//                        "/assignment?id=" + assignmentId);
-//            return;
-        }
-        if (!(contentType.equals("application/pdf"))) {
-            session.setAttribute("error",
-                    "Only PDF files are allowed.");
-
-            response.sendRedirect(request.getContextPath() +
-                        "/assignment?id=" + assignmentId);
-            return;
-        }
-
-        String uploadPath = "C:\\Users\\amri1\\OneDrive\\Documents\\NetBeansProjects\\ELearningSystem\\src\\main\\webapp\\uploads\\assignments";
-
-        File dir = new File(uploadPath);
-            if (!dir.exists()) {
-                 dir.mkdirs();
-        }
-
-        String fileName = Paths.get(part.getSubmittedFileName())
-                               .getFileName()
-                               .toString();
-        String extension = "";
-
-        int dot = fileName.lastIndexOf('.');
-
-        if (dot != -1) {
-            extension = fileName.substring(dot);
-        }
-
-        String fileName2 = UUID.randomUUID().toString().substring(0, 8) + "-" + assignmentId + extension;
-
-        String filePath = uploadPath + File.separator + fileName2;
-
-
-
-        try (InputStream input = part.getInputStream()) {
-            Files.copy(input, Paths.get(filePath),
-                    StandardCopyOption.REPLACE_EXISTING);
-        }
-
-        String fileUrl = "uploads/assignments/" + fileName2;
         
-        // Validation
-        if ((answerText == null || answerText.isBlank()) && fileUrl == null) {
-            if (response != null) { // Fix 4: Guard check
-                session.setAttribute("error", "Please upload a file or enter an answer.");
-                response.sendRedirect("assignment");
-            }
+        boolean hasFile = part != null && part.getSize() > 0;
+
+        if ((answerText == null || answerText.isBlank()) && !hasFile) {
+
+            session.setAttribute("error",
+                    "Please upload a file or enter an answer.");
+
+            response.sendRedirect(request.getContextPath()
+                    + "/assignment?id=" + assignmentId);
             return;
         }
+        
+        String contentType = part.getContentType();
+        
+        String fileUrl = null;
+        if (hasFile){
+            
+            if (!(contentType.equals("application/pdf"))) {
+                session.setAttribute("error",
+                        "Only PDF files are allowed.");
+
+                response.sendRedirect(request.getContextPath() +
+                            "/assignment?id=" + assignmentId);
+                return;
+            }
+
+            String uploadPath = getServletContext().getRealPath("/uploads/assignments");
+            
+            File dir = new File(uploadPath);
+                if (!dir.exists()) {
+                     dir.mkdirs();
+            }
+
+            String fileName = Paths.get(part.getSubmittedFileName())
+                                   .getFileName()
+                                   .toString();
+            String extension = "";
+
+            int dot = fileName.lastIndexOf('.');
+
+            if (dot != -1) {
+                extension = fileName.substring(dot);
+            }
+
+            String fileName2 = UUID.randomUUID().toString().substring(0, 8) + "-" + assignmentId + extension;
+
+            String filePath = uploadPath + File.separator + fileName2;
+
+
+
+            try (InputStream input = part.getInputStream()) {
+                Files.copy(input, Paths.get(filePath),
+                        StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            fileUrl = "uploads/assignments/" + fileName2;
+        }
+        
+        
 
         AssignmentSubmission submission = new AssignmentSubmission();
         submission.setAssignmentId(assignmentId);

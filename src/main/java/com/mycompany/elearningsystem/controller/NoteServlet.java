@@ -1,5 +1,6 @@
 package com.mycompany.elearningsystem.controller;
 
+
 import com.mycompany.elearningsystem.model.Course;
 import com.mycompany.elearningsystem.dao.CourseDAO;
 import com.mycompany.elearningsystem.model.Note;
@@ -110,7 +111,8 @@ public class NoteServlet extends HttpServlet {
                 
                 String contentType = filePart.getContentType();
                 
-                String uploadPath = "C:\\Users\\amri1\\OneDrive\\Documents\\NetBeansProjects\\ELearningSystem\\src\\main\\webapp\\uploads\\notes";
+                String uploadPath = getServletContext()
+                        .getRealPath("/uploads/notes");
                 
                 File dir = new File(uploadPath);
                 if (!dir.exists()) {

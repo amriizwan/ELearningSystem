@@ -189,7 +189,7 @@
                                     You haven't enrolled in any courses yet.
                                 </p>
 
-                                <a href="EnrollmentController"
+                                <a href="enrollment"
                                    class="inline-flex items-center gap-1.5 mt-3 text-sm font-medium text-emerald-600 hover:text-emerald-700 transition">
                                     Browse courses <i class="fa-solid fa-arrow-right text-xs"></i>
                                 </a>
@@ -250,7 +250,7 @@
 
                     <c:choose>
 
-                        <c:when test="${empty upcTasks}">
+                        <c:when test="${empty tasks}">
                             <div class="bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
                                 <div class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-400 flex items-center justify-center mx-auto mb-3">
                                     <i class="fa-solid fa-check text-lg"></i>
@@ -265,15 +265,15 @@
 
                             <div class="flex flex-col gap-3">
 
-                                <c:forEach var="task" items="${upcTasks}">
+                                <c:forEach var="task" items="${tasks}">
 
                                     <div class="bg-white border border-slate-100 rounded-2xl px-4 py-3.5 flex items-center gap-4
                                                 hover:border-indigo-200 hover:shadow-sm transition cursor-pointer"
-                                         onclick="location.href='AssignmentController'">
+                                         onclick="location.href='assignment'">
 
                                         <div class="w-2.5 h-2.5 rounded-full flex-shrink-0
-                                            ${task.urgency == 'overdue' ? 'bg-red-400'
-                                                : task.urgency == 'soon' ? 'bg-amber-400'
+                                            ${task.status == 'overdue' ? 'bg-red-400'
+                                                : task.status == 'soon' ? 'bg-amber-400'
                                                 : 'bg-emerald-400'}">
                                         </div>
 
@@ -284,7 +284,7 @@
                                             </div>
 
                                             <div class="text-xs text-slate-400 truncate mt-0.5">
-                                                ${task.courseTitle} · ${task.lecturerName}
+                                                ${task.courseName} · ${task.lecturerName}
                                             </div>
 
                                         </div>
@@ -293,11 +293,11 @@
 
                                             <c:choose>
 
-                                                <c:when test="${task.urgency == 'overdue'}">
+                                                <c:when test="${task.status == 'overdue'}">
                                                     <span class="px-2.5 py-1 rounded-full bg-red-50 text-red-500 font-semibold">Overdue</span>
                                                 </c:when>
 
-                                                <c:when test="${task.urgency == 'soon'}">
+                                                <c:when test="${task.status == 'soon'}">
                                                     <span class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-600 font-medium">${task.dueDate}</span>
                                                 </c:when>
 
