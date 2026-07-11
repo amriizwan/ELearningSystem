@@ -1,6 +1,5 @@
 package com.mycompany.elearningsystem.controller;
 
-import com.mycompany.elearningsystem.model.Submission;
 import com.mycompany.elearningsystem.dao.SubmissionDAO;
 import com.mycompany.elearningsystem.model.AssignmentSubmission;
 import jakarta.servlet.ServletException;
