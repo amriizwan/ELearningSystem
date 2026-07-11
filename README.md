@@ -5,12 +5,13 @@ Faculty of Computer and Mathematical Sciences.
 ---
 
 ## Group Members
-| Student ID   | Name                                |               |
-|--------------|-------------------------------------|
-| 2025245722   | Muhammad Amri Izwan bin Jamaludin   |
-| 2025229406   | Yushairul Haziq Ikhwan bin Yussaini |
-| 2025417472   | Muhammad Haziq Haikal bin Ridzuan   |
-| 2025482256   | Aqeel Azhar Benmahfouz bin Azhar    |
+| Student ID   | Name                              |
+|--------------|-----------------------------------|
+| 2025245722   | Muhammad Amri Izwan bin Jamaludin |
+| 2025229406   | Yushairul Haziq Ikhwan bin Yussaini | 
+| 2025417472   | Muhammad Haziq Haikal bin Ridzuan | 
+| 2025482256   | Aqeel Azhar Benmahfouz bin Azhar  | 
+
 
 ---
 
